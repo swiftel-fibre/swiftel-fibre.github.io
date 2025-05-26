@@ -6,6 +6,7 @@
     <title>Swiftel Fibre - Empowering Internet Generation</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/fontawesome/css/all.min.css">
 </head>
 <body>
 
@@ -38,7 +39,7 @@
     <section id="services" class="services-section">
         <div class="container">
             <h2>Our Fibre Internet Packages</h2>
-            <p class="section-description">Choose the perfect plan that fits your needs for seamless browsing, streaming, and working.</p>
+            <p class="section-description">Choose the perfect plan that fits your needs for seamless Browse, streaming, and working.</p>
 
             <h3>Home Packages</h3>
             <div class="service-cards">
@@ -47,7 +48,7 @@
                     <p class="speed">8 MBPS <span class="was-speed">(WAS 5 MBPS)</span></p>
                     <p class="price">Ksh. 1,500<span>/month</span></p>
                     <ul>
-                        <li><i class="fas fa-check-circle"></i> Ideal for casual browsing & social media</li>
+                        <li><i class="fas fa-check-circle"></i> Ideal for casual Browse & social media</li>
                         <li><i class="fas fa-check-circle"></i> Stream SD quality content</li>
                         <li><i class="fas fa-check-circle"></i> Standard Customer Support</li>
                     </ul>
@@ -154,20 +155,17 @@
                     <p><i class="fas fa-phone-alt"></i> Office No: +254 111 250 055</p>
                     <p><i class="fas fa-envelope"></i> Email: swiftytelk@gmail.com</p>
                     <p><i class="fas fa-map-marker-alt"></i> Coverage: Kasarani & Njiru Constituencies, Nairobi County</p>
-                    </div>
+                </div>
 
                 <div class="contact-form">
-                    <!-- Note: For a functional email sending, you'd typically need a backend script or a service like Formspree/Netlify Forms.
-                         This 'mailto' action will open the user's default email client. -->
-                    <form action="mailto:swiftytelk@gmail.com" method="post" enctype="text/plain">
+                    <form action="https://formspree.io/f/YOUR_FORMSPREE_ENDPOINT" method="POST">
                         <div class="form-group">
                             <label for="name">Your Name:</label>
                             <input type="text" id="name" name="name" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Your Email:</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
+                            <input type="email" id="email" name="_replyto" required> </div>
                         <div class="form-group">
                             <label for="subject">Subject:</label>
                             <input type="text" id="subject" name="subject" required>
@@ -196,7 +194,6 @@
         </div>
     </footer>
 
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script>
         // JavaScript to dynamically update the current year in the footer
         document.getElementById('current-year').textContent = new Date().getFullYear();
