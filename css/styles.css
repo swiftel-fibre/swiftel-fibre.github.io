@@ -378,7 +378,7 @@ a:hover {
 /* Contact Section Styling */
 .contact-section {
     padding: 80px 0;
-    background-color: var(--white-color); /* White background for contact section */
+    background-color: var(--light-gray); /* Light gray background for contact section */
     text-align: center;
 }
 
@@ -394,7 +394,7 @@ a:hover {
     flex: 1; /* Allow items to grow and shrink */
     min-width: 300px; /* Minimum width for readability */
     max-width: 500px; /* Maximum width to prevent stretching too wide */
-    background-color: var(--light-gray); /* Background for info/form cards */
+    background-color: var(--white-color); /* White background for info/form cards */
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
@@ -413,25 +413,6 @@ a:hover {
     font-size: 1.2em;
     width: 25px; /* Fixed width for icon alignment */
     text-align: center;
-}
-
-/* Social media links styling */
-.social-links {
-    margin-top: 30px;
-    text-align: center; /* Center the social icons */
-}
-
-.social-links a {
-    display: inline-block;
-    color: var(--primary-blue); /* Blue icons */
-    font-size: 1.8em;
-    margin: 0 15px;
-    transition: color 0.3s ease, transform 0.3s ease; /* Smooth transition for hover */
-}
-
-.social-links a:hover {
-    color: var(--accent-yellow); /* Yellow on hover */
-    transform: translateY(-5px); /* Slight lift effect */
 }
 
 /* Contact form styling */
@@ -485,6 +466,28 @@ a:hover {
     text-align: center;
     padding: 20px 0;
     font-size: 0.9em;
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center items horizontally */
+    gap: 15px; /* Space between copyright and social links */
+}
+
+/* Styling for social media links in the footer */
+.footer-social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between icons */
+}
+
+.footer-social-links a {
+    color: var(--white-color); /* White icons by default */
+    font-size: 1.5em; /* Smaller icon size as requested */
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.footer-social-links a:hover {
+    color: var(--accent-yellow); /* Yellow on hover */
+    transform: translateY(-3px); /* Slight lift effect */
 }
 
 /* --- About Page Specific Styles --- */
@@ -693,6 +696,11 @@ a:hover {
     .call-to-action .btn {
         margin: 10px auto; /* Center and stack buttons in CTA */
         display: block;
+    }
+
+    .main-footer .container {
+        flex-direction: column; /* Stack footer content vertically */
+        gap: 10px;
     }
 }
 
