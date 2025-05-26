@@ -3,111 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swiftel Fibre - Empowering Internet Generation</title>
-    <link rel="shortcut icon" href="../assets/images/favicon.png" type="image/png">
-    <link rel="stylesheet" href="../css/styles.css">
+    <title>Swiftel Fibre - Blazing Fast Internet for Kenya</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="logo-container">
-            <img src="../assets/images/logo.png" alt="Swiftel Fibre Logo" loading="lazy">
-            <p class="tagline" data-i18n="tagline">Empowering Internet Generation</p>
+
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="#">Swiftel Fibre</a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
         </div>
-        <nav>
-            <div class="nav-left">
-                <a href="#home" data-i18n="nav-home">Home</a>
-                <a href="../pages/about.html" data-i18n="nav-about">About</a>
-            </div>
-            <span class="brand-name" data-i18n="brand-name">Swiftel Fibre</span>
-            <div class="nav-right">
-                <a href="#services" data-i18n="nav-services">Services</a>
-                <a href="#contact" data-i18n="nav-contact">Contact</a>
-                <select id="language-toggle" onchange="changeLanguage(this.value)">
-                    <option value="en">English</option>
-                    <option value="sw">Kiswahili</option>
-                </select>
-            </div>
-        </nav>
     </header>
-    <section class="hero">
-        <h1 data-i18n="hero-title">High-Speed Internet for All</h1>
-        <p data-i18n="hero-text">Swiftel Fibre brings reliable connectivity to homes and businesses in Kasarani and Njiru, Nairobi County.</p>
-        <a href="#services" class="btn" data-i18n="hero-btn">Explore Plans</a>
+
+    <section id="home" class="hero-section">
+        <div class="container">
+            <h1>Blazing Fast Fibre Internet for Your Home & Business</h1>
+            <p>Experience reliable and high-speed connectivity across Kenya with Swiftel Fibre.</p>
+            <a href="#services" class="btn primary-btn">View Our Fibre Plans</a>
+            <a href="#contact" class="btn secondary-btn">Check Availability</a>
+        </div>
     </section>
-    <section class="services" id="services">
-        <h2 data-i18n="services-title">Our Internet Plans</h2>
-        <div class="service-grid">
-            <div class="service-card">
-                <h3 data-i18n="plan-home-8-title">Home Package - 8 Mbps</h3>
-                <p data-i18n="plan-home-8-prev">Previously 5 Mbps</p>
-                <p data-i18n="plan-home-8-desc">Perfect for small households.</p>
-                <p><strong data-i17n="plan-home-8-price">Ksh. 1500/month</strong></p>
-            </div>
-            <div class="service-card">
-                <h3 data-i18n="plan-home-13-title">Home Package - 13 Mbps</h3>
-                <p data-i18n="plan-home-13-prev">Previously 10 Mbps</p>
-                <p data-i18n="plan-home-13-desc">Great for streaming.</p>
-                <p><strong data-i18n="plan-home-13-price">Ksh. 2000/month</strong></p>
-            </div>
-            <div class="service-card">
-                <h3 data-i18n="plan-home-23-title">Home Package - 23 Mbps</h3>
-                <p data-i18n="plan-home-23-prev">Previously 20 Mbps</p>
-                <p data-i18n="plan-home-23-desc">Ideal for gaming and HD streaming.</p>
-                <p><strong data-i18n="plan-home-23-price">Ksh. 2500/month</strong></p>
-            </div>
-            <div class="service-card">
-                <h3 data-i18n="plan-home-33-title">Home Package - 33 Mbps</h3>
-                <p data-i18n="plan-home-33-prev">Previously 30 Mbps</p>
-                <p data-i18n="plan-home-33-desc">Best for large families.</p>
-                <p><strong data-i18n="plan-home-33-price">Ksh. 3000/month</strong></p>
-            </div>
-            <div class="service-card">
-                <h3 data-i18n="plan-business-23-title">Business Package - 23 Mbps</h3>
-                <p data-i18n="plan-business-23-prev">Previously 20 Mbps (Dedicated FUP)</p>
-                <p data-i18n="plan-business-23-desc">Perfect for small businesses.</p>
-                <p><strong data-i18n="plan-business-23-price">Ksh. 5000/month</strong></p>
-            </div>
-            <div class="service-card">
-                <h3 data-i18n="plan-business-33-title">Business Package - 33 Mbps</h3>
-                <p data-i18n="plan-business-33-prev">Previously 30 Mbps (Dedicated FUP)</p>
-                <p data-i18n="plan-business-33-desc">Reliable for medium businesses.</p>
-                <p><strong data-i18n="plan-business-33-price">Ksh. 8000/month</strong></p>
-            </div>
-            <div class="service-card">
-                <h3 data-i18n="plan-business-43-title">Business Package - 43 Mbps</h3>
-                <p data-i18n="plan-business-43-prev">Previously 40 Mbps (Dedicated FUP)</p>
-                <p data-i18n="plan-business-43-desc">Great for high-demand offices.</p>
-                <p><strong data-i18n="plan-business-43-price">Ksh. 10000/month</strong></p>
-            </div>
-            <div class="service-card">
-                <h3 data-i18n="plan-business-63-title">Business Package - 63 Mbps</h3>
-                <p data-i18n="plan-business-63-prev">Previously 60 Mbps (Dedicated FUP)</p>
-                <p data-i18n="plan-business-63-desc">Best for large enterprises.</p>
-                <p><strong data-i18n="plan-business-63-price">Ksh. 120000/month</strong></p>
+
+    <section id="services" class="services-section">
+        <div class="container">
+            <h2>Our Fibre Internet Packages</h2>
+            <p class="section-description">Choose the perfect plan that fits your needs for seamless Browse, streaming, and working.</p>
+
+            <div class="service-cards">
+                <div class="card">
+                    <h3>Home Basic</h3>
+                    <p class="speed">50 Mbps Download / 25 Mbps Upload</p>
+                    <p class="price">KSh 3,500<span>/month</span></p>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Unlimited Data</li>
+                        <li><i class="fas fa-check-circle"></i> Ideal for small families</li>
+                        <li><i class="fas fa-check-circle"></i> Standard Installation</li>
+                    </ul>
+                    <a href="#" class="btn card-btn">Sign Up Now</a>
+                </div>
+
+                <div class="card featured">
+                    <h3>Home Pro</h3>
+                    <p class="speed">100 Mbps Download / 50 Mbps Upload</p>
+                    <p class="price">KSh 5,000<span>/month</span></p>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Unlimited Data</li>
+                        <li><i class="fas fa-check-circle"></i> Perfect for streaming & gaming</li>
+                        <li><i class="fas fa-check-circle"></i> Priority Support</li>
+                    </ul>
+                    <a href="#" class="btn card-btn">Sign Up Now</a>
+                </div>
+
+                <div class="card">
+                    <h3>Business Elite</h3>
+                    <p class="speed">200 Mbps Download / 100 Mbps Upload</p>
+                    <p class="price">KSh 10,000<span>/month</span></p>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Dedicated Business Line</li>
+                        <li><i class="fas fa-check-circle"></i> Enhanced Security</li>
+                        <li><i class="fas fa-check-circle"></i> 24/7 Technical Support</li>
+                    </ul>
+                    <a href="#" class="btn card-btn">Get a Custom Quote</a>
+                </div>
             </div>
         </div>
     </section>
-    <section class="contact" id="contact">
-        <h2 data-i18n="contact-title">Contact Us</h2>
-        <form id="contact-form">
-            <input type="text" id="name" placeholder="Your Name" required autocomplete="off" data-i18n-placeholder="contact-name-placeholder">
-            <input type="email" id="email" placeholder="Your Email" required autocomplete="off" data-i18n-placeholder="contact-email-placeholder">
-            <textarea id="message" placeholder="Your Message" required autocomplete="off" data-i18n-placeholder="contact-message-placeholder"></textarea>
-            <button type="button" class="btn" onclick="sendEmail()" data-i18n="contact-btn">Send Message</button>
-        </form>
-        <p style="margin-top: 1rem;">
-            <strong data-i18n="contact-office-label">Office:</strong> +254111250055<br>
-            <strong data-i18n="contact-email-label">Email:</strong> <a href="mailto:swiftytelk@gmail.com">swiftytelk@gmail.com</a>
-        </p>
+
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2>About Swiftel Fibre</h2>
+            <p>Swiftel Fibre is committed to providing reliable, high-speed fibre optic internet solutions across Kenya. Our mission is to connect communities, empower businesses, and enhance lives through seamless digital experiences. We believe in transparent service, dedicated customer support, and continuous innovation.</p>
+            <p>Founded on the principles of speed and reliability, Swiftel Fibre aims to be the leading ISP in the region, bringing world-class connectivity directly to your doorstep.</p>
+        </div>
     </section>
-    <footer>
-        <p>
-            <a href="https://instagram.com/swiftel.fibre" target="_blank" data-i18n="footer-instagram">Instagram</a> |
-            <a href="https://facebook.com/Geoffreynganga.co.ke" target="_blank" data-i18n="footer-facebook">Facebook</a> |
-            <a href="https://wa.me/254111250055" target="_blank" data-i18n="footer-whatsapp">WhatsApp</a>
-        </p>
-        <p data-i18n="footer-copyright">© 2025 Swiftel Fibre. All rights reserved.</p>
+
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2>Get in Touch</h2>
+            <div class="contact-info">
+                <p><i class="fas fa-phone-alt"></i> Phone: +254 7XX XXX XXX</p>
+                <p><i class="fas fa-envelope"></i> Email: info@swiftelfibre.co.ke</p>
+                <p><i class="fas fa-map-marker-alt"></i> Address: Nairobi, Kenya</p>
+            </div>
+            <a href="mailto:info@swiftelfibre.co.ke" class="btn primary-btn">Send Us an Email</a>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; <span id="current-year"></span> Swiftel Fibre. All rights reserved.</p>
+        </div>
     </footer>
-    <script src="../js/scripts.js"></script>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        // Update current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>
