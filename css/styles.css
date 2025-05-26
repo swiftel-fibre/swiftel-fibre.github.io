@@ -8,18 +8,27 @@ body {
     background-color: #f4f7fa; /* Light background */
 }
 
-/* Color Palette Variables */
+/* Color Palette Variables: Defined based on Swiftel Fibre's logo (yellow and blue) */
 :root {
-    --primary-blue: #007bff; /* A vibrant blue for main accents */
-    --secondary-blue: #0056b3; /* Darker blue for hover/active states */
-    --accent-green: #28a745; /* A complementary green for success/features */
-    --light-gray: #e9ecef; /* Light gray for backgrounds/borders */
-    --dark-gray: #343a40; /* Dark gray for headers/strong text */
-    --text-color: #333;
-    --white-color: #ffffff;
-    --card-bg: #fff;
-    --gradient-start: #007bff; /* For gradients */
-    --gradient-end: #0056b3;   /* For gradients */
+    --swiftel-blue-dark: #0A4A6D; /* Darker blue from logo */
+    --swiftel-blue-light: #2BA0C8; /* Lighter blue from logo */
+    --swiftel-yellow: #F0B400; /* Yellow from logo */
+
+    /* Assigning roles to the new brand colors */
+    --primary-blue: var(--swiftel-blue-dark); /* Main blue for dominant elements */
+    --secondary-blue: var(--swiftel-blue-light); /* Lighter blue for secondary elements/gradients */
+    --accent-yellow: var(--swiftel-yellow); /* Yellow for highlights, primary buttons, icons */
+
+    /* General utility colors */
+    --light-gray: #f4f7fa; /* Light background for sections */
+    --dark-gray: #343a40; /* Dark gray for general text, strong headings */
+    --text-color: #333; /* Standard text color */
+    --white-color: #ffffff; /* White for backgrounds and text on dark elements */
+    --card-bg: #fff; /* Background for cards */
+
+    /* Gradient colors using the new brand palette */
+    --gradient-start: var(--swiftel-blue-dark);
+    --gradient-end: var(--swiftel-blue-light);
 }
 
 /* Global Container for Centering Content */
@@ -30,7 +39,7 @@ body {
     padding: 20px 0;
 }
 
-/* Headings */
+/* Headings Styling */
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Poppins', sans-serif; /* Header font */
     color: var(--dark-gray);
@@ -39,7 +48,7 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
     font-size: 3em;
-    color: var(--white-color); /* H1 in hero will be white */
+    color: var(--white-color); /* H1 in hero section will be white */
 }
 
 h2 {
@@ -53,14 +62,18 @@ h3 {
     color: var(--dark-gray);
 }
 
+/* Description text for sections */
 .section-description {
     text-align: center;
     font-size: 1.1em;
     margin-bottom: 50px;
     color: #555;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* Links */
+/* Links Styling */
 a {
     color: var(--primary-blue);
     text-decoration: none;
@@ -71,7 +84,7 @@ a:hover {
     color: var(--secondary-blue);
 }
 
-/* Buttons */
+/* Button Styling */
 .btn {
     display: inline-block;
     padding: 12px 25px;
@@ -82,20 +95,24 @@ a:hover {
     border: none;
     cursor: pointer;
     font-family: 'Poppins', sans-serif;
+    text-transform: uppercase; /* Make button text uppercase */
+    font-size: 0.95em;
 }
 
+/* Primary Button (Yellow) */
 .primary-btn {
-    background-color: var(--primary-blue);
+    background-color: var(--accent-yellow);
     color: var(--white-color);
-    border: 2px solid var(--primary-blue);
+    border: 2px solid var(--accent-yellow);
 }
 
 .primary-btn:hover {
-    background-color: var(--secondary-blue);
-    border-color: var(--secondary-blue);
+    background-color: #DDA000; /* Slightly darker yellow on hover */
+    border-color: #DDA000;
     color: var(--white-color);
 }
 
+/* Secondary Button (White border, transparent background) */
 .secondary-btn {
     background-color: transparent;
     color: var(--white-color);
@@ -105,18 +122,18 @@ a:hover {
 
 .secondary-btn:hover {
     background-color: var(--white-color);
-    color: var(--primary-blue);
+    color: var(--primary-blue); /* Text color changes to dark blue on hover */
 }
 
 /* Header Styling */
 .main-header {
-    background-color: var(--dark-gray); /* Dark header for contrast */
+    background-color: var(--primary-blue); /* Dark blue header for contrast */
     color: var(--white-color);
     padding: 15px 0;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    position: sticky; /* Makes header stick to top */
+    position: sticky; /* Makes header stick to top on scroll */
     top: 0;
-    z-index: 1000; /* Ensures it stays on top */
+    z-index: 1000; /* Ensures it stays on top of other content */
 }
 
 .main-header .container {
@@ -125,14 +142,14 @@ a:hover {
     align-items: center;
 }
 
-.main-header .logo a {
-    color: var(--white-color);
-    font-size: 1.8em;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+/* Logo image styling within the header */
+.main-header .logo-img {
+    height: 40px; /* Adjust height as needed */
+    width: auto; /* Maintain aspect ratio */
+    vertical-align: middle; /* Align logo vertically */
 }
 
+/* Navigation menu styling */
 .main-nav ul {
     list-style: none;
     margin: 0;
@@ -149,26 +166,35 @@ a:hover {
     font-weight: 500;
     padding: 5px 0;
     position: relative;
+    transition: color 0.3s ease;
 }
 
-.main-nav a::after { /* Underline effect on hover */
+/* Underline effect on navigation links on hover */
+.main-nav a::after {
     content: '';
     position: absolute;
     left: 0;
     bottom: 0;
     width: 0;
     height: 2px;
-    background-color: var(--primary-blue);
+    background-color: var(--accent-yellow); /* Yellow underline */
     transition: width 0.3s ease;
 }
 
-.main-nav a:hover::after {
+.main-nav a:hover::after,
+.main-nav a.active::after { /* Also apply underline for active page */
     width: 100%;
 }
 
-/* Hero Section */
+.main-nav a.active { /* Style for the currently active page link */
+    color: var(--accent-yellow);
+}
+
+
+/* Hero Section Styling */
 .hero-section {
-    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)); /* Blue gradient background */
+    /* Blue gradient background for the hero section */
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
     color: var(--white-color);
     text-align: center;
     padding: 100px 0;
@@ -192,17 +218,24 @@ a:hover {
     opacity: 0.9;
 }
 
-/* Services Section */
+/* Services Section Styling */
 .services-section {
     padding: 80px 0;
-    background-color: var(--light-gray);
+    background-color: var(--light-gray); /* Light gray background */
     text-align: center;
+}
+
+.services-section h3 {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 30px;
+    color: var(--primary-blue); /* Section sub-headings in dark blue */
 }
 
 .service-cards {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap; /* Allows cards to wrap on smaller screens */
+    flex-wrap: wrap; /* Allows cards to wrap to the next line on smaller screens */
     gap: 30px; /* Space between cards */
 }
 
@@ -211,19 +244,12 @@ a:hover {
     border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     padding: 30px;
-    width: 30%; /* Approx width for 3 cards per row */
-    min-width: 280px; /* Minimum width to prevent crushing */
+    width: 30%; /* Approx width for 3 cards per row on larger screens */
+    min-width: 280px; /* Minimum width to prevent cards from becoming too narrow */
     text-align: left;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    border: 2px solid transparent; /* Initial transparent border */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
-    overflow: hidden; /* For gradient border effect */
-}
-
-.service-cards .card:hover {
-    transform: translateY(-10px); /* Lift effect on hover */
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    /* For a brighter border on hover, we'll use a pseudo-element or a trick */
+    overflow: hidden; /* Important for the gradient border effect */
 }
 
 /* Gradient Border on Hover for Cards */
@@ -236,44 +262,59 @@ a:hover {
     bottom: 0;
     border-radius: 8px;
     padding: 2px; /* Thickness of the border */
-    background: linear-gradient(45deg, var(--primary-blue), var(--accent-green)); /* Gradient */
+    /* Gradient from yellow to light blue */
+    background: linear-gradient(45deg, var(--swiftel-yellow), var(--swiftel-blue-light));
+    /* Mask to create the border effect */
     -webkit-mask:
         linear-gradient(#fff 0 0) content-box,
         linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    pointer-events: none; /* Allows clicks to pass through */
+    pointer-events: none; /* Allows clicks to pass through to the card content */
     opacity: 0; /* Hidden by default */
     transition: opacity 0.3s ease;
 }
 
 .service-cards .card:hover::before {
-    opacity: 1; /* Show on hover */
+    opacity: 1; /* Show the gradient border on hover */
 }
 
-
+/* Styling for featured cards */
 .service-cards .card.featured {
-    border-color: var(--accent-green); /* Special border for featured card */
-    box-shadow: 0 5px 20px rgba(40, 167, 69, 0.2); /* Highlight shadow */
-    position: relative;
+    border: 2px solid var(--accent-yellow); /* Solid yellow border for featured */
+    box-shadow: 0 5px 20px rgba(240, 180, 0, 0.2); /* Highlight shadow for featured */
     z-index: 1; /* Bring featured card slightly forward */
 }
 
 .service-cards .card.featured::before {
-    background: linear-gradient(45deg, var(--accent-green), var(--primary-blue)); /* Different gradient for featured */
-    opacity: 1; /* Always visible for featured */
+    /* Different gradient for featured card, always visible */
+    background: linear-gradient(45deg, var(--swiftel-yellow), var(--swiftel-blue-dark));
+    opacity: 1;
 }
 
+/* Lift effect on card hover */
+.service-cards .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
 
 .service-cards .card h3 {
-    color: var(--primary-blue);
+    color: var(--primary-blue); /* Dark blue for card titles */
     margin-bottom: 10px;
 }
 
 .service-cards .card .speed {
     font-size: 1.1em;
     color: #555;
-    margin-bottom: 15px;
+    margin-bottom: 5px; /* Reduced margin for WAS speed */
+}
+
+/* Styling for the "WAS" speed text */
+.was-speed {
+    text-decoration: line-through; /* Strikethrough effect */
+    color: #888; /* Lighter color */
+    font-size: 0.8em; /* Smaller font size */
+    margin-left: 5px;
 }
 
 .service-cards .card .price {
@@ -303,22 +344,24 @@ a:hover {
 }
 
 .service-cards .card ul li i {
-    color: var(--accent-green);
+    color: var(--accent-yellow); /* Yellow checkmark icons */
     margin-right: 10px;
 }
 
 .service-cards .card .card-btn {
-    display: block; /* Make button full width */
+    display: block; /* Make button take full width of the card */
     width: 100%;
-    background-color: var(--primary-blue);
+    background-color: var(--primary-blue); /* Dark blue button for cards */
     color: var(--white-color);
+    border: 2px solid var(--primary-blue);
 }
 
 .service-cards .card .card-btn:hover {
-    background-color: var(--secondary-blue);
+    background-color: var(--secondary-blue); /* Lighter blue on hover */
+    border-color: var(--secondary-blue);
 }
 
-/* About Us Section */
+/* About Us Section (on homepage) */
 .about-section {
     padding: 80px 0;
     background-color: var(--white-color);
@@ -332,41 +375,242 @@ a:hover {
     color: #555;
 }
 
-/* Contact Section */
+/* Contact Section Styling */
 .contact-section {
     padding: 80px 0;
-    background-color: var(--light-gray);
+    background-color: var(--white-color); /* White background for contact section */
     text-align: center;
 }
 
-.contact-info {
-    margin-bottom: 40px;
-    font-size: 1.1em;
+.contact-content {
+    display: flex;
+    flex-wrap: wrap; /* Allow contact info and form to wrap */
+    justify-content: center;
+    gap: 40px; /* Space between info and form */
+    margin-top: 40px;
+}
+
+.contact-info, .contact-form {
+    flex: 1; /* Allow items to grow and shrink */
+    min-width: 300px; /* Minimum width for readability */
+    max-width: 500px; /* Maximum width to prevent stretching too wide */
+    background-color: var(--light-gray); /* Background for info/form cards */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    text-align: left; /* Align text within these blocks to the left */
 }
 
 .contact-info p {
-    margin-bottom: 10px;
-    color: #444;
+    margin-bottom: 15px;
+    font-size: 1.05em;
+    color: var(--dark-gray);
 }
 
 .contact-info i {
-    color: var(--primary-blue);
+    color: var(--accent-yellow); /* Yellow icons for contact info */
     margin-right: 10px;
+    font-size: 1.2em;
+    width: 25px; /* Fixed width for icon alignment */
+    text-align: center;
 }
 
-/* Footer */
+/* Social media links styling */
+.social-links {
+    margin-top: 30px;
+    text-align: center; /* Center the social icons */
+}
+
+.social-links a {
+    display: inline-block;
+    color: var(--primary-blue); /* Blue icons */
+    font-size: 1.8em;
+    margin: 0 15px;
+    transition: color 0.3s ease, transform 0.3s ease; /* Smooth transition for hover */
+}
+
+.social-links a:hover {
+    color: var(--accent-yellow); /* Yellow on hover */
+    transform: translateY(-5px); /* Slight lift effect */
+}
+
+/* Contact form styling */
+.contact-form .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.contact-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--dark-gray);
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box; /* Include padding in width calculation */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-form input[type="text"]:focus,
+.contact-form input[type="email"]:focus,
+.contact-form textarea:focus {
+    border-color: var(--primary-blue);
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Subtle blue glow on focus */
+}
+
+.contact-form textarea {
+    resize: vertical; /* Allow vertical resizing only */
+}
+
+.contact-form .primary-btn {
+    width: auto; /* Button size based on content */
+    padding: 14px 30px;
+    font-size: 1.1em;
+    margin-top: 10px;
+}
+
+/* Footer Styling */
 .main-footer {
-    background-color: var(--dark-gray);
+    background-color: var(--primary-blue); /* Dark blue footer */
     color: var(--white-color);
     text-align: center;
     padding: 20px 0;
     font-size: 0.9em;
 }
 
-/* Responsive Design */
+/* --- About Page Specific Styles --- */
+
+/* Page Hero Section (for About and potentially other future pages) */
+.page-hero {
+    background: linear-gradient(135deg, var(--swiftel-blue-dark), var(--swiftel-blue-light));
+    color: var(--white-color);
+    text-align: center;
+    padding: 80px 0;
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.page-hero h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.page-hero p {
+    font-size: 1.2em;
+    max-width: 600px;
+    opacity: 0.9;
+}
+
+/* About Us Content Section */
+.about-us-content {
+    padding: 80px 0;
+    background-color: var(--white-color);
+    text-align: center;
+}
+
+.about-us-content h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--primary-blue); /* Section titles in primary blue */
+}
+
+.about-us-content p {
+    max-width: 900px;
+    margin: 0 auto 30px auto;
+    font-size: 1.1em;
+    line-height: 1.8;
+    color: #555;
+    text-align: left; /* Align text left within paragraphs */
+}
+
+/* Values Grid for About page */
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid columns */
+    gap: 30px;
+    margin-top: 40px;
+    margin-bottom: 50px;
+}
+
+.value-item {
+    background-color: var(--light-gray);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.value-item:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.value-item h3 {
+    color: var(--dark-gray);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center; /* Align icon and text vertically */
+}
+
+.value-item h3 i {
+    color: var(--accent-yellow); /* Yellow icons for values */
+    font-size: 1.5em;
+    margin-right: 15px;
+    min-width: 30px; /* Ensure icon has space */
+}
+
+.value-item p {
+    font-size: 1em;
+    color: #666;
+    margin-bottom: 0;
+}
+
+/* Call to Action section on About page */
+.call-to-action {
+    background-color: var(--swiftel-blue-light); /* Lighter blue background */
+    color: var(--white-color);
+    padding: 40px;
+    border-radius: 8px;
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    align-items: center;
+    text-align: center;
+}
+
+.call-to-action p {
+    font-size: 1.4em;
+    font-weight: 600;
+    margin-bottom: 25px;
+    max-width: 700px;
+    color: var(--white-color); /* Ensure text is white */
+}
+
+.call-to-action .btn {
+    margin: 0 10px; /* Space between buttons */
+    margin-bottom: 15px; /* For mobile stacking */
+}
+
+
+/* --- Responsive Design Media Queries --- */
+
+/* For screens smaller than 992px (e.g., tablets in landscape) */
 @media (max-width: 992px) {
     .main-header .container {
-        flex-direction: column;
+        flex-direction: column; /* Stack header items vertically */
         align-items: center;
     }
 
@@ -393,6 +637,7 @@ a:hover {
     }
 }
 
+/* For screens smaller than 768px (e.g., most tablets and larger phones) */
 @media (max-width: 768px) {
     .hero-section {
         padding: 80px 0;
@@ -413,7 +658,7 @@ a:hover {
     }
 
     .secondary-btn {
-        margin-left: 0;
+        margin-left: 0; /* Remove left margin when buttons stack */
     }
 
     h2 {
@@ -421,23 +666,44 @@ a:hover {
     }
 
     .service-cards {
-        flex-direction: column; /* Stack cards on mobile */
+        flex-direction: column; /* Stack cards vertically on mobile */
         align-items: center;
     }
 
     .service-cards .card {
         width: 85%; /* Single column, wider cards */
-        max-width: 400px;
+        max-width: 400px; /* Limit max width for very large phones */
+    }
+
+    .contact-content {
+        flex-direction: column; /* Stack contact info and form vertically */
+        align-items: center;
+    }
+    .contact-info, .contact-form {
+        width: 90%; /* Make them wider on smaller screens */
+        min-width: unset; /* Remove min-width to allow shrinking */
+    }
+
+    .page-hero h1 {
+        font-size: 2.5em;
+    }
+    .about-us-content p {
+        text-align: center; /* Center text on mobile for about page */
+    }
+    .call-to-action .btn {
+        margin: 10px auto; /* Center and stack buttons in CTA */
+        display: block;
     }
 }
 
+/* For screens smaller than 480px (e.g., smaller phones) */
 @media (max-width: 480px) {
-    .main-header .logo a {
-        font-size: 1.5em;
+    .main-header .logo-img {
+        height: 35px; /* Slightly smaller logo */
     }
 
     .main-nav li {
-        margin: 0 10px 5px;
+        margin: 0 10px 5px; /* Tighter spacing for nav items */
     }
 
     .hero-section {
@@ -453,7 +719,7 @@ a:hover {
     }
 
     .btn {
-        display: block; /* Stack buttons on very small screens */
+        display: block; /* Stack all buttons on very small screens */
         margin: 10px auto;
     }
 }
