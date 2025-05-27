@@ -133,7 +133,7 @@
                 <div class="card">
                     <h3>Business Ultimate</h3>
                     <p class="speed">63 MBPS <span class="was-speed">(WAS 60 MBPS)</span></p>
-                    <p class="price">Ksh. 120,000<span>/month</span></p>
+                    <p class="price">Ksh. 12,000<span>/month</span></p>
                     <ul>
                         <li><i class="fas fa-check-circle"></i> Enterprise-grade internet</li>
                         <li><i class="fas fa-check-circle"></i> Maximize productivity for large organizations</li>
@@ -158,14 +158,15 @@
                 </div>
 
                 <div class="contact-form">
-                    <form action="https://formspree.io/f/xldbyzyn" method="POST">
+                    <form id="contactForm" action="https://formspree.io/f/xldbyzyn" method="POST">
                         <div class="form-group">
                             <label for="name">Your Name:</label>
                             <input type="text" id="name" name="name" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Your Email:</label>
-                            <input type="email" id="email" name="_replyto" required> </div>
+                            <input type="email" id="email" name="_replyto" required>
+                        </div>
                         <div class="form-group">
                             <label for="subject">Subject:</label>
                             <input type="text" id="subject" name="subject" required>
@@ -174,6 +175,7 @@
                             <label for="message">Your Message:</label>
                             <textarea id="message" name="message" rows="5" required></textarea>
                         </div>
+                        <input type="hidden" name="_redirect" value="https://swiftel-fibre.github.io/pages/index.html?success=true#contact">
                         <button type="submit" class="btn primary-btn">Send Message</button>
                     </form>
                 </div>
@@ -197,6 +199,24 @@
     <script>
         // JavaScript to dynamically update the current year in the footer
         document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // JavaScript to clear the form after successful submission redirection
+        document.addEventListener('DOMContentLoaded', function() {
+            const contactForm = document.getElementById('contactForm');
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Check if the URL contains '?success=true'
+            if (urlParams.has('success') && urlParams.get('success') === 'true') {
+                if (contactForm) {
+                    contactForm.reset(); // Clears all form fields
+
+                    // Optional: Remove the '?success=true' from the URL for a cleaner look
+                    // This prevents the form from clearing again if the user refreshes the page directly
+                    const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + window.location.hash;
+                    history.replaceState(null, null, cleanUrl);
+                }
+            }
+        });
     </script>
 </body>
 </html>
