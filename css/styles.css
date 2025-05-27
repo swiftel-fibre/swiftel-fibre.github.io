@@ -1,3 +1,11 @@
+/* Universal Box-Sizing for better layout control */
+html {
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
 /* General Body and Reset */
 body {
     font-family: 'Roboto', sans-serif; /* Primary font for body text */
@@ -415,6 +423,28 @@ a:hover {
     text-align: center;
 }
 
+/* Styling for social media links within the contact info section */
+.contact-info .contact-social-links {
+    margin-top: 25px; /* Space from other contact info */
+    padding-top: 15px; /* Visual separation from other contact details */
+    border-top: 1px solid #eee; /* Light separator line */
+    display: flex;
+    justify-content: center; /* Center icons within the contact info block */
+    gap: 25px; /* Spacing between icons */
+}
+
+.contact-info .contact-social-links a {
+    color: var(--primary-blue); /* Default color for icons in contact section */
+    font-size: 2em; /* Larger icons for visibility in this section */
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.contact-info .contact-social-links a:hover {
+    color: var(--accent-yellow); /* Hover color */
+    transform: translateY(-3px); /* Subtle lift */
+}
+
+
 /* Contact form styling */
 .contact-form .form-group {
     margin-bottom: 20px;
@@ -436,7 +466,7 @@ a:hover {
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1em;
-    box-sizing: border-box; /* Include padding in width calculation */
+    /* Box-sizing already handled globally, so no need for explicit 'border-box' here */
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -459,35 +489,14 @@ a:hover {
     margin-top: 10px;
 }
 
-/* Footer Styling */
+/* Footer Styling (Now simpler as social links are moved) */
 .main-footer {
     background-color: var(--primary-blue); /* Dark blue footer */
     color: var(--white-color);
     text-align: center;
     padding: 20px 0;
     font-size: 0.9em;
-    display: flex; /* Use flexbox for layout */
-    flex-direction: column; /* Stack items vertically */
-    align-items: center; /* Center items horizontally */
-    gap: 15px; /* Space between copyright and social links */
-}
-
-/* Styling for social media links in the footer */
-.footer-social-links {
-    display: flex;
-    justify-content: center;
-    gap: 20px; /* Space between icons */
-}
-
-.footer-social-links a {
-    color: var(--white-color); /* White icons by default */
-    font-size: 1.5em; /* Smaller icon size as requested */
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.footer-social-links a:hover {
-    color: var(--accent-yellow); /* Yellow on hover */
-    transform: translateY(-3px); /* Slight lift effect */
+    /* Flexbox properties removed as no longer needed for vertical stack with social links */
 }
 
 /* --- About Page Specific Styles --- */
@@ -698,9 +707,8 @@ a:hover {
         display: block;
     }
 
-    .main-footer .container {
-        flex-direction: column; /* Stack footer content vertically */
-        gap: 10px;
+    .main-footer {
+        padding: 15px 0; /* Adjust footer padding for smaller screens */
     }
 }
 
