@@ -257,7 +257,7 @@ a:hover {
     text-align: left;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
-    overflow: hidden; /* Important for the gradient border effect */
+    overflow: hidden; /* Important for the gradient border effect and fibre accent */
 }
 
 /* Gradient Border on Hover for Cards */
@@ -305,6 +305,30 @@ a:hover {
     transform: translateY(-10px);
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
+
+/* Fibre optic accent for cards */
+.service-cards .card::after {
+    content: '';
+    position: absolute;
+    bottom: 15px; /* Position from bottom */
+    right: 15px;  /* Position from right */
+    width: 25px;  /* Size of the accent */
+    height: 25px; /* Size of the accent */
+    /* Radial gradient to mimic a glowing fibre end */
+    background: radial-gradient(circle at center, var(--accent-yellow) 0%, var(--swiftel-blue-light) 70%, transparent 100%);
+    border-radius: 50%; /* Make it circular */
+    box-shadow: 0 0 10px 5px rgba(240, 180, 0, 0.5); /* Yellow glow effect */
+    z-index: 2; /* Ensure it's above other content */
+    opacity: 0.8; /* Slightly transparent */
+    transform: scale(0.8); /* Start smaller */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.service-cards .card:hover::after {
+    transform: scale(1); /* Grow on hover */
+    opacity: 1;
+}
+
 
 .service-cards .card h3 {
     color: var(--primary-blue); /* Dark blue for card titles */
