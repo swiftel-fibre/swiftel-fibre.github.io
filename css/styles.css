@@ -310,18 +310,18 @@ a:hover {
 .service-cards .card::after {
     content: ''; /* Still needed for pseudo-elements */
     position: absolute;
-    bottom: 10px; /* Adjust these values based on how your image looks */
-    right: 10px;  /* and where you want it placed relative to the card edge */
+    /* --- UPDATED POSITIONING HERE --- */
+    bottom: 0; /* Furthest bottom */
+    right: 0;  /* Furthest right */
+    /* --- END UPDATED POSITIONING --- */
     width: 60px;  /* Adjust this width based on the actual size you want the image */
     height: 60px; /* Adjust this height based on the actual size you want the image */
 
-    /* === NEW: Use your image here === */
     /* IMPORTANT: Ensure 'fibre-cable-accent.png' is a transparent PNG version of the image */
     background-image: url('../assets/images/fibre-accents/fibre-cable-accent.png'); /* <-- REPLACE 'fibre-cable-accent.png' with your image file name */
     background-size: contain; /* Ensures the entire image fits within the defined width/height */
     background-repeat: no-repeat; /* Prevents the image from repeating */
     background-position: center; /* Centers the image within its allocated space */
-    /* === END NEW === */
 
     z-index: 2; /* Ensures it stays above other content if necessary */
     opacity: 0.9; /* Make it slightly transparent initially */
