@@ -261,7 +261,6 @@ a:hover {
 }
 
 /* Gradient Border on Hover for Cards */
-/* Gradient Border on Hover for Cards */
 .service-cards .card::before {
     content: '';
     position: absolute;
@@ -273,18 +272,12 @@ a:hover {
     padding: 2px; /* Thickness of the border */
     /* Gradient from yellow to light blue */
     background: linear-gradient(45deg, var(--swiftel-yellow), var(--swiftel-blue-light));
-
     /* Mask to create the border effect */
-    /* --- ADDED STANDARD PROPERTIES HERE --- */
     -webkit-mask:
         linear-gradient(#fff 0 0) content-box,
         linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor; /* Webkit-specific composition mode */
-    mask-composite: exclude; /* Standard composition mode for 'mask' */
-    mask: linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0); /* Standard mask property */
-    /* --- END ADDED STANDARD PROPERTIES --- */
-
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
     pointer-events: none; /* Allows clicks to pass through to the card content */
     opacity: 0; /* Hidden by default */
     transition: opacity 0.3s ease;
@@ -313,7 +306,7 @@ a:hover {
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
-/* Fibre optic accent for cards - REMOVED/COMMENTED OUT */
+/* Fibre optic accent for cards - THIS IS THE ONE THAT WAS COMMENTED OUT */
 /*
 .service-cards .card::after {
     content: '';
@@ -650,65 +643,6 @@ a:hover {
     margin-bottom: 15px; /* For mobile stacking */
 }
 
-/* Styling for Service Detail Blocks on the new services page */
-.service-detail-block {
-    background-color: var(--white-color);
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    padding: 30px;
-    margin-bottom: 40px; /* Space between blocks */
-    text-align: left; /* Align text within the block */
-}
-
-.service-detail-block h3 {
-    color: var(--primary-blue);
-    font-size: 2em; /* Slightly larger heading for main service titles */
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-}
-
-.service-detail-block h3 i {
-    color: var(--accent-yellow);
-    font-size: 1.2em; /* Icon slightly smaller than text */
-    margin-right: 15px;
-    min-width: 30px; /* Ensure space for icon */
-}
-
-.service-detail-block h4 {
-    color: var(--dark-gray);
-    font-size: 1.4em;
-    margin-top: 30px;
-    margin-bottom: 15px;
-}
-
-.service-detail-block p {
-    font-size: 1.05em;
-    line-height: 1.7;
-    color: #555;
-    margin-bottom: 20px;
-}
-
-.service-detail-block ul {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 20px;
-}
-
-.service-detail-block ul li {
-    margin-bottom: 10px;
-    color: #444;
-    display: flex;
-    align-items: flex-start; /* Align icon and text to the top of the line */
-    font-size: 1em;
-}
-
-.service-detail-block ul li i {
-    color: var(--swiftel-blue-light); /* Blue check/arrow icons */
-    margin-right: 10px;
-    font-size: 1.1em;
-    line-height: 1.6; /* Match line height of text for better alignment */
-}
 
 /* --- Responsive Design Media Queries --- */
 
@@ -735,6 +669,10 @@ a:hover {
 
     .hero-section p {
         font-size: 1.1em;
+    }
+
+    .btn {
+        margin: 10px; /* Adjust button spacing for grouped buttons */
     }
 
     .service-cards .card {
