@@ -257,7 +257,7 @@ a:hover {
     text-align: left;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
-    overflow: hidden; /* Important for the gradient border effect */
+    overflow: hidden; /* Important for the gradient border effect and fibre accent */
 }
 
 /* Gradient Border on Hover for Cards */
@@ -306,31 +306,35 @@ a:hover {
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
-/* Fibre optic accent for cards - THIS IS THE ONE THAT WAS COMMENTED OUT */
-/*
+/* Fibre optic accent for cards - NOW USING AN IMAGE */
 .service-cards .card::after {
-    content: '';
+    content: ''; /* Still needed for pseudo-elements */
     position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 60px;
-    height: 60px;
-    background-image: url('../assets/images/fibre-accents/fibre-cable-accent.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: 2;
-    opacity: 0.9;
-    transform: scale(0.9) rotate(15deg);
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-    pointer-events: none;
+    /* --- UPDATED POSITIONING HERE --- */
+    bottom: 0; /* Furthest bottom */
+    right: 0;  /* Furthest right */
+    /* --- END UPDATED POSITIONING --- */
+    width: 60px;  /* Adjust this width based on the actual size you want the image */
+    height: 60px; /* Adjust this height based on the actual size you want the image */
+
+    /* IMPORTANT: Ensure 'fibre-cable-accent.png' is a transparent PNG version of the image */
+    background-image: url('../assets/images/fibre-accents/fibre-cable-accent.png'); /* <-- REPLACE 'fibre-cable-accent.png' with your image file name */
+    background-size: contain; /* Ensures the entire image fits within the defined width/height */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    background-position: center; /* Centers the image within its allocated space */
+
+    z-index: 2; /* Ensures it stays above other content if necessary */
+    opacity: 0.9; /* Make it slightly transparent initially */
+    transform: scale(0.9) rotate(15deg); /* Start slightly smaller and angled for dynamic effect */
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Smooth transitions */
+    pointer-events: none; /* Important: Ensures the pseudo-element doesn't block clicks on card content */
 }
 
+/* Hover effect for the fibre accent */
 .service-cards .card:hover::after {
-    transform: scale(1.05) rotate(20deg);
-    opacity: 1;
+    transform: scale(1.05) rotate(20deg); /* Slightly larger and more rotated on hover */
+    opacity: 1; /* Fully opaque on hover */
 }
-*/
 
 
 .service-cards .card h3 {
@@ -669,10 +673,6 @@ a:hover {
 
     .hero-section p {
         font-size: 1.1em;
-    }
-
-    .btn {
-        margin: 10px; /* Adjust button spacing for grouped buttons */
     }
 
     .service-cards .card {
