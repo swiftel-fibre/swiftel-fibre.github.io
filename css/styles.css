@@ -257,7 +257,7 @@ a:hover {
     text-align: left;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
-    overflow: hidden; /* Important for the gradient border effect and fibre accent */
+    overflow: hidden; /* Important for the gradient border effect */
 }
 
 /* Gradient Border on Hover for Cards */
@@ -272,12 +272,14 @@ a:hover {
     padding: 2px; /* Thickness of the border */
     /* Gradient from yellow to light blue */
     background: linear-gradient(45deg, var(--swiftel-yellow), var(--swiftel-blue-light));
-    /* Mask to create the border effect */
+    /* Mask to create the border effect (original version with -webkit- only) */
     -webkit-mask:
         linear-gradient(#fff 0 0) content-box,
         linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
-    mask-composite: exclude;
+    /* Adding standard mask for full compatibility as previously discussed, but keeping it as you provided it first. */
+    /* mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); */
+    /* mask-composite: exclude; */
     pointer-events: none; /* Allows clicks to pass through to the card content */
     opacity: 0; /* Hidden by default */
     transition: opacity 0.3s ease;
@@ -306,35 +308,32 @@ a:hover {
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
-/* Fibre optic accent for cards - NOW USING AN IMAGE */
+/* Fibre optic accent for cards - THIS IS THE ONE THAT WAS COMMENTED OUT IN YOUR PREVIOUS STYLES */
+/* I am keeping it commented out as per your previous intention. */
+/*
 .service-cards .card::after {
-    content: ''; /* Still needed for pseudo-elements */
+    content: '';
     position: absolute;
-    /* --- UPDATED POSITIONING HERE --- */
-    bottom: 0; /* Furthest bottom */
-    right: 0;  /* Furthest right */
-    /* --- END UPDATED POSITIONING --- */
-    width: 60px;  /* Adjust this width based on the actual size you want the image */
-    height: 60px; /* Adjust this height based on the actual size you want the image */
-
-    /* IMPORTANT: Ensure 'fibre-cable-accent.png' is a transparent PNG version of the image */
-    background-image: url('../assets/images/fibre-accents/fibre-cable-accent.png'); /* <-- REPLACE 'fibre-cable-accent.png' with your image file name */
-    background-size: contain; /* Ensures the entire image fits within the defined width/height */
-    background-repeat: no-repeat; /* Prevents the image from repeating */
-    background-position: center; /* Centers the image within its allocated space */
-
-    z-index: 2; /* Ensures it stays above other content if necessary */
-    opacity: 0.9; /* Make it slightly transparent initially */
-    transform: scale(0.9) rotate(15deg); /* Start slightly smaller and angled for dynamic effect */
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Smooth transitions */
-    pointer-events: none; /* Important: Ensures the pseudo-element doesn't block clicks on card content */
+    bottom: 0;
+    right: 0;
+    width: 60px;
+    height: 60px;
+    background-image: url('../assets/images/fibre-accents/fibre-cable-accent.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 2;
+    opacity: 0.9;
+    transform: scale(0.9) rotate(15deg);
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    pointer-events: none;
 }
 
-/* Hover effect for the fibre accent */
 .service-cards .card:hover::after {
-    transform: scale(1.05) rotate(20deg); /* Slightly larger and more rotated on hover */
-    opacity: 1; /* Fully opaque on hover */
+    transform: scale(1.05) rotate(20deg);
+    opacity: 1;
 }
+*/
 
 
 .service-cards .card h3 {
@@ -400,20 +399,6 @@ a:hover {
     border-color: var(--secondary-blue);
 }
 
-/* About Us Section (on homepage) */
-.about-section {
-    padding: 80px 0;
-    background-color: var(--white-color);
-    text-align: center;
-}
-
-.about-section p {
-    max-width: 800px;
-    margin: 0 auto 20px auto;
-    font-size: 1.1em;
-    color: #555;
-}
-
 /* Contact Section Styling */
 .contact-section {
     padding: 80px 0;
@@ -474,7 +459,6 @@ a:hover {
     color: var(--accent-yellow); /* Hover color */
     transform: translateY(-3px); /* Subtle lift */
 }
-
 
 /* Contact form styling */
 .contact-form .form-group {
@@ -675,29 +659,8 @@ a:hover {
         font-size: 1.1em;
     }
 
-    .service-cards .card {
-        width: 45%; /* Two cards per row on tablets */
-    }
-}
-
-/* For screens smaller than 768px (e.g., most tablets and larger phones) */
-@media (max-width: 768px) {
-    .hero-section {
-        padding: 80px 0;
-    }
-
-    .hero-section h1 {
-        font-size: 2.2em;
-    }
-
-    .hero-section p {
-        font-size: 1em;
-    }
-
     .btn {
-        padding: 10px 20px;
-        font-size: 0.9em;
-        margin: 5px; /* Adjust button spacing */
+        margin: 10px; /* Adjust button spacing for grouped buttons */
     }
 
     .secondary-btn {
