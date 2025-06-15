@@ -1,1 +1,1 @@
-(Live Preview)[https://swiftel-fibre.githuv.io/public]
+[Live Preview](https://swiftel-fibre.github.io/public)
