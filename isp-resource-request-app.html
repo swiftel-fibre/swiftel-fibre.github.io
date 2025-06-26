@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISP Resource Request App</title>
+    <style>
+        /* General Body and Container Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            color: #333;
+            box-sizing: border-box; /* Ensures padding is included in total width/height */
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+            margin-top: 20px; /* Add some space from the top */
+        }
+
+        /* Heading Styling */
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 700;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+
+        /* Form Group Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1em;
+            color: #333;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Button Styling */
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Message Box Styling (for success/error messages) */
+        .message-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            display: none; /* Hidden by default */
+        }
+        .message-box.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .message-box.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .message-box.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* Page specific display */
+        .page {
+            display: none; /* All pages hidden by default */
+        }
+        .page.active {
+            display: block; /* Only active page is shown */
+        }
+
+        /* Navigation Styling */
+        nav {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        nav button {
+            width: auto;
+            display: inline-block;
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #6c757d; /* Grey for nav buttons */
+            box-shadow: none;
+        }
+        nav button:hover {
+            background-color: #5a6268;
+            transform: none; /* No translateY for nav buttons on hover */
+        }
+        nav button.active {
+            background-color: #007bff; /* Highlight active nav button */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+                align-items: stretch;
+            }
+            .container {
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            }
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+            button {
+                padding: 12px;
+                font-size: 1em;
+            }
+            nav button {
+                margin: 5px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <button id="navLoginBtn" class="active">Login</button>
+            <button id="navDashboardBtn">Dashboard</button>
+            <button id="navRequestsBtn">Requests</button>
+        </nav>
+
+        <!-- Login Page -->
+        <div id="loginPage" class="page active">
+            <h1>Login</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginUsername">Username:</label>
+                    <input type="text" id="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="rememberMeLogin">
+                    <label for="rememberMeLogin" style="display: inline-block; margin-left: 5px;">Remember Me</label>
+                </div>
+                <button type="submit">Login</button>
+                <div class="message-box" id="loginMessageBox"></div>
+                <p style="text-align: center; margin-top: 15px;">
+                    Don't have an account? <a href="#" id="showRegister">Register here</a>
+                </p>
+            </form>
+        </div>
+
+        <!-- Registration Page (Initially hidden, shown via JS) -->
+        <div id="registerPage" class="page">
+            <h1>Register</h1>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerUsername">Username:</label>
+                    <input type="text" id="registerUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password:</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="rememberMeRegister">
+                    <label for="rememberMeRegister" style="display: inline-block; margin-left: 5px;">Remember Me</label>
+                </div>
+                <button type="submit">Register</button>
+                <div class="message-box" id="registerMessageBox"></div>
+                <p style="text-align: center; margin-top: 15px;">
+                    Already have an account? <a href="#" id="showLogin">Login here</a>
+                </p>
+            </form>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page">
+            <h1>Dashboard</h1>
+            <p>Welcome, <span id="currentUsername"></span>! Your role: <span id="currentUserRole"></span></p>
+            <form id="resourceRequestForm">
+                <div class="form-group">
+                    <label for="itemDescription">Item Description:</label>
+                    <input type="text" id="itemDescription" placeholder="e.g., Cisco Catalyst 9k Switch" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price (KES):</label>
+                    <input type="number" id="price" min="0" step="any" required>
+                    <p id="priceError" style="color: red; font-size: 0.9em; margin-top: 5px; display: none;">Price exceeds available budget!</p>
+                </div>
+                <div class="form-group">
+                    <label for="requestDate">Date:</label>
+                    <input type="date" id="requestDate" required>
+                </div>
+                <button type="submit">Submit Request</button>
+                <div class="message-box" id="dashboardMessageBox"></div>
+            </form>
+            <p style="margin-top: 20px;">Total Available Budget: KES <span id="availableBudget">100,000</span></p>
+            <p>Balance After Approval: KES <span id="balanceAfterApproval">100,000</span></p>
+        </div>
+
+        <!-- Requests Page -->
+        <div id="requestsPage" class="page">
+            <h1>Requests</h1>
+            <div id="requestsList">
+                <p style="text-align: center;">No requests submitted yet.</p>
+                <!-- Requests will be dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('JavaScript loaded and DOM content parsed.');
+
+            // --- User/Auth Simulation Variables (Moved to top of DOMContentLoaded) ---
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+            const ADMIN_USERNAME = 'admin'; // Hardcoded admin username for initial setup
+            const INITIAL_BUDGET = 100000;
+            let currentBudget = parseFloat(localStorage.getItem('currentBudget')) || INITIAL_BUDGET;
+
+            // --- Page Navigation Logic ---
+            const pages = document.querySelectorAll('.page');
+            const navButtons = document.querySelectorAll('nav button');
+
+            function showPage(pageId) {
+                pages.forEach(page => page.classList.remove('active'));
+                navButtons.forEach(button => button.classList.remove('active'));
+
+                document.getElementById(pageId).classList.add('active');
+                if (pageId === 'loginPage' || pageId === 'registerPage') {
+                    document.getElementById('navLoginBtn').classList.add('active');
+                } else if (pageId === 'dashboardPage') {
+                    document.getElementById('navDashboardBtn').classList.add('active');
+                } else if (pageId === 'requestsPage') {
+                    document.getElementById('navRequestsBtn').classList.add('active');
+                }
+                updateNavigationVisibility(); // Call this to hide nav when logged out
+            }
+
+            function showMessageBox(messageBoxId, message, type) {
+                const msgBox = document.getElementById(messageBoxId);
+                msgBox.textContent = message;
+                msgBox.className = `message-box ${type}`; // Reset classes then add new type
+                msgBox.style.display = 'block';
+                setTimeout(() => {
+                    msgBox.style.display = 'none';
+                    msgBox.textContent = '';
+                }, 5000); // Hide after 5 seconds
+            }
+
+            // Initial page load logic after variables are defined
+            updateNavigationVisibility();
+            if (currentUser) {
+                showPage('dashboardPage');
+            } else {
+                showPage('loginPage');
+            }
+
+
+            // Navigation button event listeners
+            document.getElementById('navLoginBtn').addEventListener('click', () => {
+                showPage('loginPage');
+                // If user clicks login when logged in, log them out
+                if (currentUser) {
+                    logoutUser();
+                }
+            });
+            document.getElementById('navDashboardBtn').addEventListener('click', () => {
+                if (currentUser) {
+                    showPage('dashboardPage');
+                } else {
+                    showMessageBox('loginMessageBox', 'Please log in to access the dashboard.', 'info');
+                    showPage('loginPage');
+                }
+            });
+            document.getElementById('navRequestsBtn').addEventListener('click', () => {
+                if (currentUser) {
+                    showPage('requestsPage');
+                } else {
+                    showMessageBox('loginMessageBox', 'Please log in to view requests.', 'info');
+                    showPage('loginPage');
+                }
+            });
+
+            // Toggle between login and register forms
+            document.getElementById('showRegister').addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage('registerPage');
+            });
+            document.getElementById('showLogin').addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage('loginPage');
+            });
+
+            // --- Utility Functions ---
+            function saveUsers() {
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+
+            function saveCurrentUser() {
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                updateNavigationVisibility();
+            }
+
+            function updateBudget(amount) {
+                currentBudget = amount;
+                localStorage.setItem('currentBudget', currentBudget.toString());
+                document.getElementById('availableBudget').textContent = currentBudget.toLocaleString();
+                document.getElementById('balanceAfterApproval').textContent = currentBudget.toLocaleString(); // Initially same as available
+            }
+
+            function logoutUser() {
+                currentUser = null;
+                localStorage.removeItem('currentUser'); // Ensure localStorage is cleared on logout
+                sessionStorage.removeItem('currentUser'); // Clear session storage as well
+                saveCurrentUser(); // Will set currentUser to null and update UI
+                showPage('loginPage');
+                showMessageBox('loginMessageBox', 'You have been logged out.', 'info');
+            }
+
+            // Function to update visibility of navigation buttons based on login status
+            function updateNavigationVisibility() {
+                const loggedIn = currentUser !== null;
+                document.getElementById('navDashboardBtn').style.display = loggedIn ? 'inline-block' : 'none';
+                document.getElementById('navRequestsBtn').style.display = loggedIn ? 'inline-block' : 'none';
+                document.getElementById('navLoginBtn').textContent = loggedIn ? 'Logout' : 'Login';
+                if (loggedIn) {
+                    document.getElementById('currentUsername').textContent = currentUser.username;
+                    document.getElementById('currentUserRole').textContent = currentUser.role;
+                }
+            }
+
+            // Initialize budget on first load if not set
+            if (!localStorage.getItem('currentBudget')) {
+                updateBudget(INITIAL_BUDGET);
+            } else {
+                 document.getElementById('availableBudget').textContent = currentBudget.toLocaleString();
+                 document.getElementById('balanceAfterApproval').textContent = currentBudget.toLocaleString();
+            }
+
+            // --- Registration Logic ---
+            const registerForm = document.getElementById('registerForm');
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('registerUsername').value.trim();
+                const password = document.getElementById('registerPassword').value;
+                const rememberMe = document.getElementById('rememberMeRegister').checked;
+                const registerMessageBox = document.getElementById('registerMessageBox');
+
+                if (username.length < 3 || password.length < 6) {
+                    showMessageBox('registerMessageBox', 'Username must be at least 3 characters and password at least 6 characters.', 'error');
+                    return;
+                }
+
+                if (users.some(user => user.username === username)) {
+                    showMessageBox('registerMessageBox', 'Username already exists.', 'error');
+                    return;
+                }
+
+                let role = 'employee';
+                // First registered user is the admin (simulation for developer role)
+                if (users.length === 0 && username.toLowerCase() === ADMIN_USERNAME) {
+                    role = 'admin';
+                }
+
+                const newUser = { username, password, role };
+                users.push(newUser);
+                saveUsers();
+                showMessageBox('registerMessageBox', `Registration successful! You are now a ${role}.`, 'success');
+
+                if (rememberMe || role === 'admin') { // Admins are always "remembered" for this simulation
+                    currentUser = newUser;
+                    saveCurrentUser();
+                    showPage('dashboardPage');
+                } else {
+                    showPage('loginPage');
+                }
+                registerForm.reset();
+            });
+
+            // --- Login Logic ---
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('loginUsername').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                const rememberMe = document.getElementById('rememberMeLogin').checked;
+                const loginMessageBox = document.getElementById('loginMessageBox');
+
+                const foundUser = users.find(user => user.username === username && user.password === password);
+
+                if (foundUser) {
+                    currentUser = foundUser;
+                    if (rememberMe) {
+                        saveCurrentUser(); // Persist login
+                    } else {
+                        sessionStorage.setItem('currentUser', JSON.stringify(foundUser)); // Session-only login
+                        localStorage.removeItem('currentUser'); // Clear any "remembered" login
+                    }
+                    showMessageBox('loginMessageBox', `Welcome, ${currentUser.username}! You are logged in as ${currentUser.role}.`, 'success');
+                    showPage('dashboardPage');
+                } else {
+                    showMessageBox('loginMessageBox', 'Invalid username or password.', 'error');
+                }
+            });
+
+            // --- Dashboard Logic (Resource Request) ---
+            const resourceRequestForm = document.getElementById('resourceRequestForm');
+            const priceInput = document.getElementById('price');
+            const priceError = document.getElementById('priceError');
+
+            priceInput.addEventListener('input', () => {
+                if (parseFloat(priceInput.value) > currentBudget) {
+                    priceError.style.display = 'block';
+                } else {
+                    priceError.style.display = 'none';
+                }
+            });
+
+            resourceRequestForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (!currentUser || currentUser.role !== 'employee') {
+                    showMessageBox('dashboardMessageBox', 'Only employees can submit requests.', 'error');
+                    return;
+                }
+
+                const itemDescription = document.getElementById('itemDescription').value.trim();
+                const price = parseFloat(priceInput.value);
+                const requestDate = document.getElementById('requestDate').value;
+
+                if (!itemDescription || isNaN(price) || price <= 0 || !requestDate) {
+                    showMessageBox('dashboardMessageBox', 'Please fill all request fields correctly.', 'error');
+                    return;
+                }
+
+                if (price > currentBudget) {
+                    showMessageBox('dashboardMessageBox', 'Cannot submit: Price exceeds available budget.', 'error');
+                    return;
+                }
+
+                let requests = JSON.parse(localStorage.getItem('requests')) || [];
+                const newRequest = {
+                    id: Date.now(), // Simple unique ID
+                    employeeName: currentUser.username,
+                    itemDescription,
+                    price,
+                    requestDate,
+                    status: 'pending', // Initial status
+                    approvals: [],    // Array to store approver names and dates
+                    disapprovals: []  // Array to store disapprovals
+                };
+                requests.push(newRequest);
+                localStorage.setItem('requests', JSON.stringify(requests));
+                showMessageBox('dashboardMessageBox', 'Resource request submitted successfully!', 'success');
+                resourceRequestForm.reset();
+                priceError.style.display = 'none'; // Hide error after successful submission
+                // No budget deduction on submission, only on approval (simulated)
+            });
+
+            // --- Requests Page Logic ---
+            const requestsListDiv = document.getElementById('requestsList');
+
+            function renderRequests() {
+                let requests = JSON.parse(localStorage.getItem('requests')) || [];
+                requestsListDiv.innerHTML = ''; // Clear existing list
+
+                if (requests.length === 0) {
+                    requestsListDiv.innerHTML = '<p style="text-align: center;">No requests submitted yet.</p>';
+                    return;
+                }
+
+                requests.forEach(request => {
+                    const requestDiv = document.createElement('div');
+                    requestDiv.classList.add('request-item');
+                    // Add some basic styling for request items
+                    requestDiv.style.border = '1px solid #ddd';
+                    requestDiv.style.padding = '15px';
+                    requestDiv.style.marginBottom = '15px';
+                    requestDiv.style.borderRadius = '8px';
+                    requestDiv.style.backgroundColor = '#fdfdfd';
+                    requestDiv.style.boxShadow = '0 2px 5px rgba(0,0,0,0.05)';
+
+                    let statusColor = '#6c757d'; // Default grey for pending
+                    if (request.status === 'approved') {
+                        statusColor = '#28a745'; // Green
+                    } else if (request.status === 'disapproved') {
+                        statusColor = '#dc3545'; // Red
+                    }
+
+                    let approvalDetailsHtml = '';
+                    if (request.approvals && request.approvals.length > 0) {
+                        approvalDetailsHtml += `<p style="font-weight: 600; margin-top: 10px;">Approvals:</p>`;
+                        request.approvals.forEach(approval => {
+                            approvalDetailsHtml += `<p style="margin-left: 15px; font-size: 0.9em;">- ${approval.name} on ${approval.date}</p>`;
+                        });
+                    }
+                    if (request.disapprovals && request.disapprovals.length > 0) {
+                        approvalDetailsHtml += `<p style="font-weight: 600; margin-top: 10px;">Disapprovals:</p>`;
+                        request.disapprovals.forEach(disapproval => {
+                            disapprovalDetailsHtml += `<p style="margin-left: 15px; font-size: 0.9em;">- ${disapproval.name} on ${disapproval.date}</p>`;
+                        });
+                    }
+
+
+                    requestDiv.innerHTML = `
+                        <h3 style="margin-top: 0; color: #007bff;">${request.itemDescription}</h3>
+                        <p><strong>Requested By:</strong> ${request.employeeName}</p>
+                        <p><strong>Price:</strong> KES ${request.price.toLocaleString()}</p>
+                        <p><strong>Date Requested:</strong> ${request.requestDate}</p>
+                        <p><strong>Status:</strong> <span style="color: ${statusColor}; font-weight: 700;">${request.status.toUpperCase()}</span></p>
+                        ${approvalDetailsHtml}
+                        <div class="employer-actions" style="margin-top: 20px; ${currentUser && (currentUser.role === 'employer' || currentUser.role === 'admin') ? 'display: block;' : 'display: none;'}">
+                            <h4 style="margin-top: 0; color: #555;">Employer Actions:</h4>
+                            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                                <input type="radio" id="approve-${request.id}" name="action-${request.id}" value="approve" ${request.approvals.some(a => a.name === currentUser?.username) ? 'checked' : ''} ${request.disapprovals.some(d => d.name === currentUser?.username) ? 'disabled' : ''}>
+                                <label for="approve-${request.id}">Approve</label>
+
+                                <input type="radio" id="disapprove-${request.id}" name="action-${request.id}" value="disapprove" ${request.disapprovals.some(d => d.name === currentUser?.username) ? 'checked' : ''} ${request.approvals.some(a => a.name === currentUser?.username) ? 'disabled' : ''}>
+                                <label for="disapprove-${request.id}">Disapprove</label>
+
+                                <input type="date" id="actionDate-${request.id}" style="width: auto; flex-grow: 1;">
+                            </div>
+                            <button class="action-btn" data-id="${request.id}" style="padding: 10px; font-size: 0.9em; width: auto;">Record Decision</button>
+                        </div>
+                    `;
+                    requestsListDiv.appendChild(requestDiv);
+
+                    // Add event listener for action buttons
+                    if (currentUser && (currentUser.role === 'employer' || currentUser.role === 'admin')) {
+                        const actionBtn = requestDiv.querySelector(`.action-btn[data-id="${request.id}"]`);
+                        actionBtn.addEventListener('click', () => handleRequestAction(request.id));
+
+                        // Set default date to today for employer actions
+                        const actionDateInput = requestDiv.querySelector(`#actionDate-${request.id}`);
+                        const today = new Date().toISOString().split('T')[0];
+                        actionDateInput.value = today;
+                    }
+                });
+            }
+
+            function handleRequestAction(requestId) {
+                let requests = JSON.parse(localStorage.getItem('requests')) || [];
+                let requestToUpdate = requests.find(req => req.id === requestId);
+
+                if (!requestToUpdate) return;
+
+                const approveRadio = document.getElementById(`approve-${requestId}`);
+                const disapproveRadio = document.getElementById(`disapprove-${requestId}`);
+                const actionDate = document.getElementById(`actionDate-${requestId}`).value;
+
+                if (!actionDate) {
+                    showMessageBox('dashboardMessageBox', 'Please select an action date.', 'error');
+                    return;
+                }
+
+                if (!approveRadio.checked && !disapproveRadio.checked) {
+                    showMessageBox('dashboardMessageBox', 'Please select either Approve or Disapprove.', 'error');
+                    return;
+                }
+
+                // Remove previous decision by current user, if any
+                requestToUpdate.approvals = requestToUpdate.approvals.filter(a => a.name !== currentUser.username);
+                requestToUpdate.disapprovals = requestToUpdate.disapprovals.filter(d => d.name !== currentUser.username);
+
+                const decision = { name: currentUser.username, date: actionDate };
+
+                if (approveRadio.checked) {
+                    requestToUpdate.approvals.push(decision);
+                } else if (disapproveRadio.checked) {
+                    requestToUpdate.disapprovals.push(decision);
+                }
+
+                // Update request status based on approvals/disapprovals
+                // Simulate 4 board members approval
+                const totalApprovers = 4; // This is a simulated number of board members required
+                if (requestToUpdate.approvals.length >= totalApprovers) {
+                    requestToUpdate.status = 'approved';
+                    // Deduct budget if approved
+                    let newBudget = currentBudget - requestToUpdate.price;
+                    updateBudget(newBudget);
+                    showMessageBox('dashboardMessageBox', `Request for "${requestToUpdate.itemDescription}" approved and budget updated!`, 'success');
+                } else if (requestToUpdate.disapprovals.length > 0 && requestToUpdate.disapprovals.length === totalApprovers - 1) { // If 3 disapprove (meaning 1 less than totalApprovers)
+                    requestToUpdate.status = 'disapproved';
+                    showMessageBox('dashboardMessageBox', `Request for "${requestToUpdate.itemDescription}" disapproved.`, 'error');
+                } else {
+                    requestToUpdate.status = 'pending...'; // Still pending if not fully approved/disapproved
+                }
+
+                localStorage.setItem('requests', JSON.stringify(requests));
+                renderRequests(); // Re-render to show updated status and approvals
+            }
+
+
+            // Listen for page changes to re-render requests if on the requests page
+            document.querySelectorAll('nav button').forEach(button => {
+                button.addEventListener('click', () => {
+                    if (button.id === 'navRequestsBtn' && currentUser) {
+                        renderRequests();
+                    }
+                });
+            });
+
+            // Initial render if user is already logged in and on requests page
+            if (currentUser && document.getElementById('requestsPage').classList.contains('active')) {
+                renderRequests();
+            }
+        });
+    </script>
+</body>
+</html>
