@@ -145,11 +145,12 @@
         nav button {
             width: auto;
             display: inline-block;
-            margin: 0 10px;
-            padding: 10px 20px;
-            font-size: 1em;
+            margin: 0 5px; /* Slightly reduced margin */
+            padding: 10px 18px; /* Slightly reduced padding */
+            font-size: 0.95em; /* Slightly smaller font */
             background-color: #6c757d; /* Grey for nav buttons */
             box-shadow: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
         nav button:hover {
             background-color: #5a6268;
@@ -179,9 +180,108 @@
                 font-size: 1em;
             }
             nav button {
-                margin: 5px;
-                padding: 8px 15px;
+                margin: 5px 3px; /* Even smaller margin */
+                padding: 8px 12px; /* Even smaller padding */
+                font-size: 0.85em; /* Smaller font for nav buttons */
             }
+        }
+
+        /* User List Specific Styling */
+        .user-item {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            gap: 10px; /* Space between flex items */
+        }
+        .user-info {
+            flex-grow: 1;
+            /* margin-right: 15px; */ /* Removed as gap handles spacing */
+        }
+        .user-info p {
+            margin: 5px 0;
+        }
+        .user-info .username {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        .user-info .role {
+            font-style: italic;
+            color: #666;
+            font-size: 0.95em;
+        }
+        .user-actions {
+            display: flex;
+            gap: 8px; /* Space between buttons */
+            flex-wrap: wrap; /* Allow buttons to wrap */
+            justify-content: flex-end; /* Align buttons to the right */
+        }
+        .user-actions button {
+            width: auto;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            box-shadow: none;
+            /* margin-left: 10px; */ /* Removed as gap handles spacing */
+            flex-shrink: 0; /* Prevent button from shrinking */
+        }
+        .user-actions .promote-btn {
+            background-color: #28a745; /* Green for promote */
+        }
+        .user-actions .promote-btn:hover {
+            background-color: #218838;
+        }
+        .user-actions .delete-btn {
+            background-color: #dc3545; /* Red for delete */
+        }
+        .user-actions .delete-btn:hover {
+            background-color: #c82333;
+        }
+        .user-actions button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Request Item Styling */
+        .request-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: relative; /* For delete button positioning */
+        }
+        .request-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end; /* Align to right */
+        }
+        .request-actions .delete-request-btn {
+            background-color: #dc3545; /* Red */
+            color: white;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            border-radius: 5px;
+            cursor: pointer;
+            width: auto;
+            display: inline-block; /* Override display: block from general button style */
+            box-shadow: none;
+            transition: background-color 0.3s ease;
+        }
+        .request-actions .delete-request-btn:hover {
+            background-color: #c82333;
+        }
+        .request-actions .delete-request-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -191,6 +291,7 @@
             <button id="navLoginBtn" class="active">Login</button>
             <button id="navDashboardBtn">Dashboard</button>
             <button id="navRequestsBtn">Requests</button>
+            <button id="navUsersBtn" style="display: none;">Users</button> <!-- New button for Admin -->
         </nav>
 
         <!-- Login Page -->
@@ -273,6 +374,17 @@
                 <p style="text-align: center;">No requests submitted yet.</p>
                 <!-- Requests will be dynamically loaded here -->
             </div>
+            <div class="message-box" id="requestsMessageBox"></div>
+        </div>
+
+        <!-- User Management Page (New Page) -->
+        <div id="userManagementPage" class="page">
+            <h1>User Management</h1>
+            <div id="userList">
+                <p style="text-align: center;">No users registered yet.</p>
+                <!-- Users will be dynamically loaded here -->
+            </div>
+            <div class="message-box" id="userMessageBox"></div>
         </div>
     </div>
 
@@ -280,7 +392,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log('JavaScript loaded and DOM content parsed.');
 
-            // --- User/Auth Simulation Variables (Moved to top of DOMContentLoaded) ---
+            // --- User/Auth Simulation Variables ---
             let users = JSON.parse(localStorage.getItem('users')) || [];
             let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
             const ADMIN_USERNAME = 'admin'; // Hardcoded admin username for initial setup
@@ -290,6 +402,7 @@
             // --- Page Navigation Logic ---
             const pages = document.querySelectorAll('.page');
             const navButtons = document.querySelectorAll('nav button');
+            const navUsersBtn = document.getElementById('navUsersBtn');
 
             function showPage(pageId) {
                 pages.forEach(page => page.classList.remove('active'));
@@ -302,8 +415,12 @@
                     document.getElementById('navDashboardBtn').classList.add('active');
                 } else if (pageId === 'requestsPage') {
                     document.getElementById('navRequestsBtn').classList.add('active');
+                    renderRequests(); // Render requests when this page is shown
+                } else if (pageId === 'userManagementPage') {
+                    document.getElementById('navUsersBtn').classList.add('active');
+                    renderUserList(); // Render users when this page is shown
                 }
-                updateNavigationVisibility(); // Call this to hide nav when logged out
+                updateNavigationVisibility(); // Call this to hide/show nav buttons based on login/role
             }
 
             function showMessageBox(messageBoxId, message, type) {
@@ -350,6 +467,15 @@
                     showPage('loginPage');
                 }
             });
+            // New nav button for User Management
+            navUsersBtn.addEventListener('click', () => {
+                if (currentUser && currentUser.role === 'admin') {
+                    showPage('userManagementPage');
+                } else {
+                    showMessageBox('loginMessageBox', 'Only Admins can access User Management.', 'error');
+                    showPage('loginPage'); // Redirect to login if not admin
+                }
+            });
 
             // Toggle between login and register forms
             document.getElementById('showRegister').addEventListener('click', (e) => {
@@ -387,12 +513,16 @@
                 showMessageBox('loginMessageBox', 'You have been logged out.', 'info');
             }
 
-            // Function to update visibility of navigation buttons based on login status
+            // Function to update visibility of navigation buttons based on login status and role
             function updateNavigationVisibility() {
                 const loggedIn = currentUser !== null;
+                const isAdmin = loggedIn && currentUser.role === 'admin';
+
                 document.getElementById('navDashboardBtn').style.display = loggedIn ? 'inline-block' : 'none';
                 document.getElementById('navRequestsBtn').style.display = loggedIn ? 'inline-block' : 'none';
                 document.getElementById('navLoginBtn').textContent = loggedIn ? 'Logout' : 'Login';
+                navUsersBtn.style.display = isAdmin ? 'inline-block' : 'none'; // Only show for admin
+
                 if (loggedIn) {
                     document.getElementById('currentUsername').textContent = currentUser.username;
                     document.getElementById('currentUserRole').textContent = currentUser.role;
@@ -427,7 +557,7 @@
                 }
 
                 let role = 'employee';
-                // First registered user is the admin (simulation for developer role)
+                // First registered user with admin username gets admin role
                 if (users.length === 0 && username.toLowerCase() === ADMIN_USERNAME) {
                     role = 'admin';
                 }
@@ -463,8 +593,9 @@
                     if (rememberMe) {
                         saveCurrentUser(); // Persist login
                     } else {
-                        sessionStorage.setItem('currentUser', JSON.stringify(foundUser)); // Session-only login
-                        localStorage.removeItem('currentUser'); // Clear any "remembered" login
+                        // For non-remembered logins, clear localStorage currentUser and set sessionStorage
+                        localStorage.removeItem('currentUser');
+                        sessionStorage.setItem('currentUser', JSON.stringify(foundUser));
                     }
                     showMessageBox('loginMessageBox', `Welcome, ${currentUser.username}! You are logged in as ${currentUser.role}.`, 'success');
                     showPage('dashboardPage');
@@ -477,6 +608,8 @@
             const resourceRequestForm = document.getElementById('resourceRequestForm');
             const priceInput = document.getElementById('price');
             const priceError = document.getElementById('priceError');
+            const dashboardMessageBox = document.getElementById('dashboardMessageBox');
+
 
             priceInput.addEventListener('input', () => {
                 if (parseFloat(priceInput.value) > currentBudget) {
@@ -488,8 +621,9 @@
 
             resourceRequestForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                if (!currentUser || currentUser.role !== 'employee') {
-                    showMessageBox('dashboardMessageBox', 'Only employees can submit requests.', 'error');
+                // Both employee and employer can submit requests as per initial requirements
+                if (!currentUser || (currentUser.role !== 'employee' && currentUser.role !== 'employer' && currentUser.role !== 'admin')) {
+                    showMessageBox('dashboardMessageBox', 'You do not have permission to submit requests.', 'error');
                     return;
                 }
 
@@ -514,7 +648,7 @@
                     itemDescription,
                     price,
                     requestDate,
-                    status: 'pending', // Initial status
+                    status: 'pending...', // Initial status, using '...' as per your request
                     approvals: [],    // Array to store approver names and dates
                     disapprovals: []  // Array to store disapprovals
                 };
@@ -528,6 +662,7 @@
 
             // --- Requests Page Logic ---
             const requestsListDiv = document.getElementById('requestsList');
+            const requestsMessageBox = document.getElementById('requestsMessageBox'); // New message box for requests page
 
             function renderRequests() {
                 let requests = JSON.parse(localStorage.getItem('requests')) || [];
@@ -558,17 +693,25 @@
 
                     let approvalDetailsHtml = '';
                     if (request.approvals && request.approvals.length > 0) {
-                        approvalDetailsHtml += `<p style="font-weight: 600; margin-top: 10px;">Approvals:</p>`;
+                        approvalDetailsHtml += `<p style="font-weight: 600; margin-top: 10px; margin-bottom: 5px;">Approvals:</p>`;
                         request.approvals.forEach(approval => {
-                            approvalDetailsHtml += `<p style="margin-left: 15px; font-size: 0.9em;">- ${approval.name} on ${approval.date}</p>`;
+                            approvalDetailsHtml += `<p style="margin-left: 15px; font-size: 0.9em;">&#10003; ${approval.name} on ${approval.date}</p>`;
                         });
                     }
                     if (request.disapprovals && request.disapprovals.length > 0) {
-                        approvalDetailsHtml += `<p style="font-weight: 600; margin-top: 10px;">Disapprovals:</p>`;
+                        approvalDetailsHtml += `<p style="font-weight: 600; margin-top: 10px; margin-bottom: 5px;">Disapprovals:</p>`;
                         request.disapprovals.forEach(disapproval => {
-                            disapprovalDetailsHtml += `<p style="margin-left: 15px; font-size: 0.9em;">- ${disapproval.name} on ${disapproval.date}</p>`;
+                            approvalDetailsHtml += `<p style="margin-left: 15px; font-size: 0.9em;">&#10007; ${disapproval.name} on ${disapproval.date}</p>`;
                         });
                     }
+
+                    // Check if current user has already made a decision on this request
+                    const hasUserApproved = request.approvals.some(a => a.name === currentUser?.username);
+                    const hasUserDisapproved = request.disapprovals.some(d => d.name === currentUser?.username);
+                    const isDecisionMade = hasUserApproved || hasUserDisapproved;
+
+                    // Determine if delete button should be enabled
+                    const canDeleteRequest = (currentUser && (currentUser.username === request.employeeName || currentUser.role === 'admin'));
 
 
                     requestDiv.innerHTML = `
@@ -579,30 +722,50 @@
                         <p><strong>Status:</strong> <span style="color: ${statusColor}; font-weight: 700;">${request.status.toUpperCase()}</span></p>
                         ${approvalDetailsHtml}
                         <div class="employer-actions" style="margin-top: 20px; ${currentUser && (currentUser.role === 'employer' || currentUser.role === 'admin') ? 'display: block;' : 'display: none;'}">
-                            <h4 style="margin-top: 0; color: #555;">Employer Actions:</h4>
-                            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
-                                <input type="radio" id="approve-${request.id}" name="action-${request.id}" value="approve" ${request.approvals.some(a => a.name === currentUser?.username) ? 'checked' : ''} ${request.disapprovals.some(d => d.name === currentUser?.username) ? 'disabled' : ''}>
+                            <h4 style="margin-top: 0; color: #555;">Your Decision:</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px;">
+                                <input type="radio" id="approve-${request.id}" name="action-${request.id}" value="approve" ${hasUserApproved ? 'checked' : ''} ${isDecisionMade && !hasUserApproved ? 'disabled' : ''}>
                                 <label for="approve-${request.id}">Approve</label>
 
-                                <input type="radio" id="disapprove-${request.id}" name="action-${request.id}" value="disapprove" ${request.disapprovals.some(d => d.name === currentUser?.username) ? 'checked' : ''} ${request.approvals.some(a => a.name === currentUser?.username) ? 'disabled' : ''}>
+                                <input type="radio" id="disapprove-${request.id}" name="action-${request.id}" value="disapprove" ${hasUserDisapproved ? 'checked' : ''} ${isDecisionMade && !hasUserDisapproved ? 'disabled' : ''}>
                                 <label for="disapprove-${request.id}">Disapprove</label>
 
-                                <input type="date" id="actionDate-${request.id}" style="width: auto; flex-grow: 1;">
+                                <input type="date" id="actionDate-${request.id}" style="width: auto; flex-grow: 1; max-width: 150px;">
                             </div>
-                            <button class="action-btn" data-id="${request.id}" style="padding: 10px; font-size: 0.9em; width: auto;">Record Decision</button>
+                            <button class="action-btn" data-id="${request.id}" ${isDecisionMade ? 'disabled' : ''} style="padding: 10px; font-size: 0.9em; width: auto; background-color: ${isDecisionMade ? '#cccccc' : '#007bff'}; cursor: ${isDecisionMade ? 'not-allowed' : 'pointer'};">Record Decision</button>
+                        </div>
+                        <div class="request-actions" style="${canDeleteRequest ? 'display: flex;' : 'display: none;'}">
+                            <button class="delete-request-btn" data-id="${request.id}" ${!canDeleteRequest ? 'disabled' : ''}>Delete Request</button>
                         </div>
                     `;
                     requestsListDiv.appendChild(requestDiv);
 
-                    // Add event listener for action buttons
+                    // Add event listener for action buttons (Approve/Disapprove)
                     if (currentUser && (currentUser.role === 'employer' || currentUser.role === 'admin')) {
                         const actionBtn = requestDiv.querySelector(`.action-btn[data-id="${request.id}"]`);
                         actionBtn.addEventListener('click', () => handleRequestAction(request.id));
 
-                        // Set default date to today for employer actions
                         const actionDateInput = requestDiv.querySelector(`#actionDate-${request.id}`);
-                        const today = new Date().toISOString().split('T')[0];
-                        actionDateInput.value = today;
+                        if (!isDecisionMade) {
+                            const today = new Date().toISOString().split('T')[0];
+                            actionDateInput.value = today;
+                        } else {
+                            const decision = request.approvals.find(a => a.name === currentUser?.username) || request.disapprovals.find(d => d.name === currentUser?.username);
+                            if (decision) {
+                                actionDateInput.value = decision.date;
+                            }
+                            actionDateInput.disabled = true;
+                        }
+                        if (isDecisionMade) {
+                            requestDiv.querySelector(`#approve-${request.id}`).disabled = true;
+                            requestDiv.querySelector(`#disapprove-${request.id}`).disabled = true;
+                        }
+                    }
+
+                    // Add event listener for delete request button
+                    if (canDeleteRequest) {
+                        const deleteRequestBtn = requestDiv.querySelector(`.delete-request-btn[data-id="${request.id}"]`);
+                        deleteRequestBtn.addEventListener('click', () => deleteRequest(request.id));
                     }
                 });
             }
@@ -618,12 +781,12 @@
                 const actionDate = document.getElementById(`actionDate-${requestId}`).value;
 
                 if (!actionDate) {
-                    showMessageBox('dashboardMessageBox', 'Please select an action date.', 'error');
+                    showMessageBox('requestsMessageBox', 'Please select an action date.', 'error');
                     return;
                 }
 
                 if (!approveRadio.checked && !disapproveRadio.checked) {
-                    showMessageBox('dashboardMessageBox', 'Please select either Approve or Disapprove.', 'error');
+                    showMessageBox('requestsMessageBox', 'Please select either Approve or Disapprove.', 'error');
                     return;
                 }
 
@@ -640,23 +803,73 @@
                 }
 
                 // Update request status based on approvals/disapprovals
-                // Simulate 4 board members approval
-                const totalApprovers = 4; // This is a simulated number of board members required
-                if (requestToUpdate.approvals.length >= totalApprovers) {
+                const totalBoardMembers = 4; // This is a simulated number of board members required
+                const uniqueApprovers = new Set(requestToUpdate.approvals.map(a => a.name)).size;
+                const uniqueDisapprovers = new Set(requestToUpdate.disapprovals.map(d => d.name)).size;
+
+
+                if (uniqueApprovers >= totalBoardMembers) {
                     requestToUpdate.status = 'approved';
-                    // Deduct budget if approved
-                    let newBudget = currentBudget - requestToUpdate.price;
-                    updateBudget(newBudget);
-                    showMessageBox('dashboardMessageBox', `Request for "${requestToUpdate.itemDescription}" approved and budget updated!`, 'success');
-                } else if (requestToUpdate.disapprovals.length > 0 && requestToUpdate.disapprovals.length === totalApprovers - 1) { // If 3 disapprove (meaning 1 less than totalApprovers)
+                    // Deduct budget if approved and not already deducted for this request
+                    if (requestToUpdate.budgetDeducted !== true) { // Prevent double deduction
+                        let newBudget = currentBudget - requestToUpdate.price;
+                        updateBudget(newBudget);
+                        requestToUpdate.budgetDeducted = true; // Mark budget as deducted
+                        showMessageBox('requestsMessageBox', `Request for "${requestToUpdate.itemDescription}" APPROVED and budget updated!`, 'success');
+                    }
+                } else if (uniqueDisapprovers >= totalBoardMembers) { // If all 4 disapprove
+                     requestToUpdate.status = 'disapproved';
+                     showMessageBox('requestsMessageBox', `Request for "${requestToUpdate.itemDescription}" DISAPPROVED.`, 'error');
+                }
+                else if ((requestToUpdate.approvals.length + requestToUpdate.disapprovals.length) >= totalBoardMembers && uniqueApprovers < totalBoardMembers) {
+                    // If enough people have voted, but not all approve, then it's effectively disapproved by majority if there's no more votes to come
+                    // This is a simplified logic. You might want to refine this based on strict majority.
+                    // For now: if enough votes cast, and not fully approved, then it's disapproved.
                     requestToUpdate.status = 'disapproved';
-                    showMessageBox('dashboardMessageBox', `Request for "${requestToUpdate.itemDescription}" disapproved.`, 'error');
-                } else {
+                    showMessageBox('requestsMessageBox', `Request for "${requestToUpdate.itemDescription}" DISAPPROVED due to insufficient approvals.`, 'error');
+                }
+                else {
                     requestToUpdate.status = 'pending...'; // Still pending if not fully approved/disapproved
                 }
 
                 localStorage.setItem('requests', JSON.stringify(requests));
                 renderRequests(); // Re-render to show updated status and approvals
+            }
+
+            // New function to delete a request
+            function deleteRequest(requestIdToDelete) {
+                if (!currentUser) {
+                    showMessageBox('requestsMessageBox', 'You must be logged in to delete requests.', 'error');
+                    return;
+                }
+
+                let requests = JSON.parse(localStorage.getItem('requests')) || [];
+                const requestToDelete = requests.find(req => req.id === requestIdToDelete);
+
+                if (!requestToDelete) {
+                    showMessageBox('requestsMessageBox', 'Request not found.', 'error');
+                    return;
+                }
+
+                // Check if the current user is the requester OR an admin
+                const isRequester = currentUser.username === requestToDelete.employeeName;
+                const isAdmin = currentUser.role === 'admin';
+
+                if (!isRequester && !isAdmin) {
+                    showMessageBox('requestsMessageBox', 'You do not have permission to delete this request.', 'error');
+                    return;
+                }
+
+                const initialRequestCount = requests.length;
+                requests = requests.filter(req => req.id !== requestIdToDelete);
+
+                if (requests.length < initialRequestCount) {
+                    localStorage.setItem('requests', JSON.stringify(requests));
+                    showMessageBox('requestsMessageBox', `Request "${requestToDelete.itemDescription}" deleted successfully!`, 'success');
+                    renderRequests(); // Re-render the list
+                } else {
+                    showMessageBox('requestsMessageBox', `Failed to delete request "${requestToDelete.itemDescription}".`, 'error');
+                }
             }
 
 
@@ -672,6 +885,120 @@
             // Initial render if user is already logged in and on requests page
             if (currentUser && document.getElementById('requestsPage').classList.contains('active')) {
                 renderRequests();
+            }
+
+            // --- User Management Page Logic ---
+            const userListDiv = document.getElementById('userList');
+            const userMessageBox = document.getElementById('userMessageBox');
+
+            function renderUserList() {
+                userListDiv.innerHTML = ''; // Clear existing list
+
+                if (users.length === 0) {
+                    userListDiv.innerHTML = '<p style="text-align: center;">No users registered yet.</p>';
+                    return;
+                }
+
+                users.forEach(user => {
+                    const userItemDiv = document.createElement('div');
+                    userItemDiv.classList.add('user-item');
+
+                    userItemDiv.innerHTML = `
+                        <div class="user-info">
+                            <p class="username">${user.username}</p>
+                            <p class="role">Role: ${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</p>
+                        </div>
+                        <div class="user-actions">
+                            <button class="promote-btn" data-username="${user.username}"
+                                ${user.role === 'employer' || user.role === 'admin' ? 'disabled' : ''}
+                                style="background-color: ${user.role === 'employer' || user.role === 'admin' ? '#cccccc' : '#28a745'}; cursor: ${user.role === 'employer' || user.role === 'admin' ? 'not-allowed' : 'pointer'};">
+                                Promote to Employer
+                            </button>
+                            <button class="delete-btn" data-username="${user.username}"
+                                ${user.username === currentUser.username || user.role === 'admin' ? 'disabled' : ''}
+                                style="background-color: ${user.username === currentUser.username || user.role === 'admin' ? '#cccccc' : '#dc3545'}; cursor: ${user.username === currentUser.username || user.role === 'admin' ? 'not-allowed' : 'pointer'};">
+                                Delete User
+                            </button>
+                        </div>
+                    `;
+                    userListDiv.appendChild(userItemDiv);
+
+                    const promoteBtn = userItemDiv.querySelector(`.promote-btn[data-username="${user.username}"]`);
+                    if (promoteBtn && currentUser && currentUser.role === 'admin') {
+                        promoteBtn.addEventListener('click', () => promoteUser(user.username));
+                    }
+                    const deleteBtn = userItemDiv.querySelector(`.delete-btn[data-username="${user.username}"]`);
+                    if (deleteBtn && currentUser && currentUser.role === 'admin') {
+                        deleteBtn.addEventListener('click', () => deleteUser(user.username));
+                    }
+                });
+            }
+
+            function promoteUser(usernameToPromote) {
+                if (currentUser.role !== 'admin') {
+                    showMessageBox('userMessageBox', 'Only Admins can promote users.', 'error');
+                    return;
+                }
+
+                let userToPromoteIndex = users.findIndex(user => user.username === usernameToPromote);
+
+                if (userToPromoteIndex === -1) {
+                    showMessageBox('userMessageBox', 'User not found.', 'error');
+                    return;
+                }
+
+                if (users[userToPromoteIndex].role === 'employee') {
+                    users[userToPromoteIndex].role = 'employer';
+                    saveUsers();
+                    showMessageBox('userMessageBox', `${usernameToPromote} promoted to Employer successfully!`, 'success');
+                    renderUserList();
+
+                    if (currentUser.username === usernameToPromote) {
+                        currentUser.role = 'employer';
+                        saveCurrentUser();
+                    }
+                } else {
+                    showMessageBox('userMessageBox', `${usernameToPromote} is already an Employer or Admin.`, 'info');
+                }
+            }
+
+            function deleteUser(usernameToDelete) {
+                if (currentUser.role !== 'admin') {
+                    showMessageBox('userMessageBox', 'Only Admins can delete users.', 'error');
+                    return;
+                }
+                if (usernameToDelete === currentUser.username) {
+                    showMessageBox('userMessageBox', 'You cannot delete your own admin account.', 'error');
+                    return;
+                }
+                if (users.find(user => user.username === usernameToDelete && user.role === 'admin')) {
+                    showMessageBox('userMessageBox', 'You cannot delete another admin account.', 'error');
+                    return;
+                }
+
+                const initialUserCount = users.length;
+                users = users.filter(user => user.username !== usernameToDelete);
+                
+                if (users.length < initialUserCount) {
+                    saveUsers();
+                    showMessageBox('userMessageBox', `${usernameToDelete} deleted successfully!`, 'success');
+                    renderUserList();
+                } else {
+                    showMessageBox('userMessageBox', `Failed to delete ${usernameToDelete}. User not found.`, 'error');
+                }
+            }
+
+            // --- Initial Checks and UI Setup ---
+            if (localStorage.getItem('currentUser')) {
+                currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                updateNavigationVisibility();
+                showPage('dashboardPage');
+            } else if (sessionStorage.getItem('currentUser')) {
+                currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+                updateNavigationVisibility();
+                showPage('dashboardPage');
+            } else {
+                showPage('loginPage');
             }
         });
     </script>
