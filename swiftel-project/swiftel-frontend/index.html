@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISP Resource Request App - Swiftel</title>
+    <!-- Inter font for better aesthetics -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Body and Container Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            color: #333;
+            box-sizing: border-box; /* Ensures padding is included in total width/height */
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+            margin-top: 20px; /* Add some space from the top */
+        }
+
+        /* Heading Styling */
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 700;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+
+        /* Form Group Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        input[type="date"], /* Added for date input styling */
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1em;
+            color: #333;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus, /* Added for date input styling */
+        textarea:focus,
+        select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Button Styling */
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Message Box Styling (for success/error messages) */
+        .message-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            display: none; /* Hidden by default */
+        }
+        .message-box.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .message-box.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .message-box.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* Page specific display */
+        .page {
+            display: none; /* All pages hidden by default */
+        }
+        .page.active {
+            display: block; /* Only active page is shown */
+        }
+
+        /* Navigation Styling */
+        nav {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        nav button {
+            width: auto;
+            display: inline-block;
+            margin: 0 5px; /* Slightly reduced margin */
+            padding: 10px 18px; /* Slightly reduced padding */
+            font-size: 0.95em; /* Slightly smaller font */
+            background-color: #6c757d; /* Grey for nav buttons */
+            box-shadow: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        nav button:hover {
+            background-color: #5a6268;
+            transform: none; /* No translateY for nav buttons on hover */
+        }
+        nav button.active {
+            background-color: #007bff; /* Highlight active nav button */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+                align-items: stretch;
+            }
+            .container {
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            }
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+            button {
+                padding: 12px;
+                font-size: 1em;
+            }
+            nav button {
+                margin: 5px 3px; /* Even smaller margin */
+                padding: 8px 12px; /* Even smaller padding */
+                font-size: 0.85em; /* Smaller font for nav buttons */
+            }
+        }
+
+        /* User List Specific Styling (Generalizing for tables - retained for consistency) */
+        .data-table-container {
+            width: 100%;
+            overflow-x: auto; /* Enable horizontal scrolling for tables */
+            margin-top: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+        .data-table { /* These styles might not be directly used if not rendering a table, but kept */
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+            vertical-align: top;
+        }
+        .data-table th {
+            background-color: #f5f5f5;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        .data-table tbody tr:nth-child(even) {
+            background-color: #fdfdfd;
+        }
+        .data-table tbody tr:hover {
+            background-color: #f0f0f0;
+        }
+        .data-table td .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .data-table td .status-badge.pending { background-color: #fff3cd; color: #856404; }
+        .data-table td .status-badge.approved { background-color: #d4edda; color: #155724; }
+        .data-table td .status-badge.rejected { background-color: #f8d7da; color: #721c24; }
+        .data-table td .status-badge.completed { background-color: #d1ecf1; color: #0c5460; }
+
+        .data-table .action-btn { /* Retained as they apply to buttons */
+            width: auto;
+            padding: 8px 12px;
+            font-size: 0.85em;
+            box-shadow: none;
+            display: inline-block;
+            margin: 0 4px;
+        }
+        .data-table .action-btn.promote-btn {
+            background-color: #28a745;
+        }
+        .data-table .action-btn.promote-btn:hover {
+            background-color: #218838;
+        }
+        .data-table .action-btn.delete-btn {
+            background-color: #dc3545;
+        }
+        .data-table .action-btn.delete-btn:hover {
+            background-color: #c82333;
+        }
+        .data-table .action-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Original User List Specific Styling (now applied to user-item if used) */
+        .user-item {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .user-info {
+            flex-grow: 1;
+        }
+        .user-info p {
+            margin: 5px 0;
+        }
+        .user-info .username {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        .user-info .role {
+            font-style: italic;
+            color: #666;
+            font-size: 0.95em;
+        }
+        .user-info .email {
+            font-size: 0.9em;
+            color: #777;
+        }
+        .user-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .user-actions button {
+            width: auto;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            box-shadow: none;
+            flex-shrink: 0;
+        }
+        .user-actions .promote-btn {
+            background-color: #28a745;
+        }
+        .user-actions .promote-btn:hover {
+            background-color: #218838;
+        }
+        .user-actions .delete-btn {
+            background-color: #dc3545;
+        }
+        .user-actions .delete-btn:hover {
+            background-color: #c82333;
+        }
+        .user-actions button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Request Item Styling */
+        .request-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .request-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .request-actions .delete-request-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            border-radius: 5px;
+            cursor: pointer;
+            width: auto;
+            display: inline-block;
+            box-shadow: none;
+            transition: background-color 0.3s ease;
+        }
+        .request-actions .delete-request-btn:hover {
+            background-color: #c82333;
+        }
+        .request-actions .delete-request-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        /* Style for Add New User Form */
+        #addNewUserForm {
+            border-top: 1px solid #e0e0e0;
+            margin-top: 30px;
+            padding-top: 20px;
+        }
+        #addNewUserForm h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        #addNewUserForm button {
+            background-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <button id="navLoginBtn" class="active">Login</button>
+            <button id="navDashboardBtn">Dashboard</button>
+            <button id="navRequestsBtn">Requests</button>
+            <button id="navUsersBtn" style="display: none;">Users</button> <!-- New button for Admin -->
+        </nav>
+
+        <!-- Login Page -->
+        <div id="loginPage" class="page active">
+            <h1>Login</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginUsername">Username/Email:</label>
+                    <input type="text" id="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="rememberMeLogin">
+                    <label for="rememberMeLogin" style="display: inline-block; margin-left: 5px;">Remember Me</label>
+                </div>
+                <button type="submit">Login</button>
+                <div class="message-box" id="loginMessageBox"></div>
+                <p style="text-align: center; margin-top: 15px;">
+                    Don't have an account? <a href="#" id="showRegister">Register here</a>
+                </p>
+            </form>
+        </div>
+
+        <!-- Registration Page (Initially hidden, shown via JS) -->
+        <div id="registerPage" class="page">
+            <h1>Register</h1>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerUsername">Username:</label>
+                    <input type="text" id="registerUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email:</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password:</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <!-- Role selection for registration -->
+                <div class="form-group">
+                    <label for="registerRole">Role:</label>
+                    <select id="registerRole">
+                        <option value="employee">Employee</option>
+                        <option value="employer">Employer</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="rememberMeRegister">
+                    <label for="rememberMeRegister" style="display: inline-block; margin-left: 5px;">Remember Me</label>
+                </div>
+                <button type="submit">Register</button>
+                <div class="message-box" id="registerMessageBox"></div>
+                <p style="text-align: center; margin-top: 15px;">
+                    Already have an account? <a href="#" id="showLogin">Login here</a>
+                </p>
+            </form>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page">
+            <h1>Dashboard</h1>
+            <p>Welcome, <span id="currentUsername"></span>! Your role: <span id="currentUserRole"></span></p>
+            <form id="resourceRequestForm">
+                <div class="form-group">
+                    <label for="itemDescription">Item Description:</label>
+                    <input type="text" id="itemDescription" placeholder="e.g., Cisco Catalyst 9k Switch" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price (KES):</label>
+                    <input type="number" id="price" min="0" step="any" required>
+                    <p id="priceError" style="color: red; font-size: 0.9em; margin-top: 5px; display: none;">Price exceeds available budget!</p>
+                </div>
+                <div class="form-group">
+                    <label for="requestDate">Date:</label>
+                    <input type="date" id="requestDate" required>
+                </div>
+                <button type="submit">Submit Request</button>
+                <div class="message-box" id="dashboardMessageBox"></div>
+            </form>
+            <!-- Budget display moved back to dashboard -->
+            <div id="budgetDisplayArea">
+                <p style="margin-top: 20px;">Total Available Budget: KES <span id="availableBudget">100,000.00</span></p>
+                <p>Balance After Approval: KES <span id="balanceAfterApproval">100,000.00</span></p>
+
+                <!-- Admin budget update controls, now back on dashboard for simplicity -->
+                <div id="budgetAdminControls" style="display: none;">
+                    <h2>Update Budget</h2>
+                    <form id="updateBudgetForm" class="budget-update-form">
+                        <div class="form-group">
+                            <label for="newBudgetAmount">New Budget Amount (KES):</label>
+                            <input type="number" id="newBudgetAmount" min="0" step="any" required>
+                        </div>
+                        <button type="submit">Update Budget</button>
+                    </form>
+                </div>
+                <div class="message-box" id="budgetMessageBox"></div>
+            </div>
+        </div>
+
+        <!-- Requests Page -->
+        <div id="requestsPage" class="page">
+            <h1>Requests Overview</h1>
+            <div id="requestsList">
+                <p style="text-align: center; padding: 20px;">Loading requests...</p>
+                <!-- Requests will be dynamically loaded here -->
+            </div>
+            <div class="message-box" id="requestsMessageBox"></div>
+        </div>
+
+        <!-- User Management Page -->
+        <div id="userManagementPage" class="page">
+            <h1>User Management</h1>
+            <div id="userList">
+                <p style="text-align: center; padding: 20px;">Loading users...</p>
+                <!-- Users will be dynamically loaded here -->
+            </div>
+            <div class="message-box" id="userMessageBox"></div>
+
+            <form id="addNewUserForm">
+                <h2>Add New User (Admin Only)</h2>
+                <div class="form-group">
+                    <label for="newUserUsername">Username:</label>
+                    <input type="text" id="newUserUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUserEmail">Email:</label>
+                    <input type="email" id="newUserEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUserPassword">Password:</label>
+                    <input type="password" id="newUserPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUserRole">Role:</label>
+                    <select id="newUserRole">
+                        <option value="employee">Employee</option>
+                        <option value="employer">Employer</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit">Add User</button>
+                <div class="message-box" id="addNewUserMessageBox"></div>
+            </form>
+        </div>
+
+        <!-- Access Denied Page (kept for general permission errors) -->
+        <div id="accessDeniedPage" class="page">
+            <div class="message-box error" style="display: block;">
+                <h2>Access Denied</h2>
+                <p>You do not have permission to view this page.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main JavaScript Logic -->
+    <script>
+        // --- Configuration ---
+        const API_BASE_URL = 'http://localhost:8000'; // Your local PHP backend URL
+        const STORAGE_KEY_TOKEN = 'jwt_token';
+        const STORAGE_KEY_USER = 'current_user';
+
+        // --- Global State Variables ---
+        let currentUser = null; // Stores user data (id, username, email, role, token) after successful login
+        let currentBudget = 0; // Will be fetched from backend dynamically
+
+        // --- DOM Elements (Declared globally so functions can access them) ---
+        // These are assigned directly when the script loads, before DOMContentLoaded
+        const pages = document.querySelectorAll('.page');
+        const navButtons = document.querySelectorAll('nav button');
+        const navUsersBtn = document.getElementById('navUsersBtn');
+        const availableBudgetSpan = document.getElementById('availableBudget');
+        const balanceAfterApprovalSpan = document.getElementById('balanceAfterApproval');
+
+        // Declare these globally, assign inside DOMContentLoaded
+        let requestsListDiv;
+        let userListDiv;
+        let addNewUserForm;
+
+        // --- Utility Functions (Declared at the top level for global access) ---
+        function showMessageBox(messageBoxId, message, type) {
+            const msgBox = document.getElementById(messageBoxId);
+            if (msgBox) {
+                msgBox.textContent = message;
+                msgBox.className = `message-box ${type}`;
+                msgBox.style.display = 'block';
+                setTimeout(() => {
+                    msgBox.style.display = 'none';
+                    msgBox.textContent = '';
+                }, 5000);
+            } else {
+                console.warn(`Message box with ID ${messageBoxId} not found.`);
+            }
+        }
+
+        function updateNavigationVisibility() {
+            const loggedIn = currentUser !== null;
+            const isAdmin = loggedIn && currentUser.role === 'admin';
+
+            if (navButtons) {
+                navButtons.forEach(btn => btn.style.display = 'none');
+            }
+
+            const navLoginBtn = document.getElementById('navLoginBtn');
+            const navDashboardBtn = document.getElementById('navDashboardBtn');
+            const navRequestsBtn = document.getElementById('navRequestsBtn');
+            const navUsersBtn = document.getElementById('navUsersBtn');
+
+            if (navLoginBtn) navLoginBtn.style.display = 'inline-block';
+
+            if (loggedIn) {
+                if (navDashboardBtn) navDashboardBtn.style.display = 'inline-block';
+                if (navRequestsBtn) navRequestsBtn.style.display = 'inline-block';
+
+                if (isAdmin) {
+                    if (navUsersBtn) navUsersBtn.style.display = 'inline-block';
+                    const budgetAdminControls = document.getElementById('budgetAdminControls');
+                    if (budgetAdminControls) {
+                        budgetAdminControls.style.display = 'block';
+                    }
+                } else {
+                    const budgetAdminControls = document.getElementById('budgetAdminControls');
+                    if (budgetAdminControls) {
+                        budgetAdminControls.style.display = 'none';
+                    }
+                }
+                if (navLoginBtn) navLoginBtn.textContent = `Logout (${currentUser.username})`;
+            } else {
+                if (navLoginBtn) navLoginBtn.textContent = 'Login';
+                const showRegisterLink = document.getElementById('showRegister');
+                const showLoginLink = document.getElementById('showLogin');
+                if (showRegisterLink) showRegisterLink.style.display = 'inline';
+                if (showLoginLink) showLoginLink.style.display = 'inline';
+            }
+
+            const currentUsernameSpan = document.getElementById('currentUsername');
+            const currentUserRoleSpan = document.getElementById('currentUserRole');
+            if (currentUsernameSpan && currentUserRoleSpan) {
+                if (loggedIn) {
+                    currentUsernameSpan.textContent = currentUser.username;
+                    currentUserRoleSpan.textContent = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
+                } else {
+                    currentUsernameSpan.textContent = '';
+                    currentUserRoleSpan.textContent = '';
+                }
+            }
+        }
+
+        function showPage(pageId) {
+            if (!pages || !navButtons) {
+                console.error('DOM elements not initialized for showPage. This might be called too early.');
+                return; // Prevent errors if called before initial DOM elements are assigned
+            }
+
+            pages.forEach(page => page.classList.remove('active'));
+            navButtons.forEach(button => button.classList.remove('active'));
+
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            if (pageId === 'loginPage' || pageId === 'registerPage') {
+                document.getElementById('navLoginBtn')?.classList.add('active');
+            } else if (pageId === 'dashboardPage') {
+                document.getElementById('navDashboardBtn')?.classList.add('active');
+                if (currentUser) fetchBudget();
+            } else if (pageId === 'requestsPage') {
+                document.getElementById('navRequestsBtn')?.classList.add('active');
+                if (currentUser) fetchRequests();
+            } else if (pageId === 'userManagementPage') {
+                document.getElementById('navUsersBtn')?.classList.add('active');
+                if (currentUser && currentUser.role === 'admin') fetchUsers();
+            }
+            updateNavigationVisibility();
+        }
+
+        async function logoutUser() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentUser.token}`
+                    }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    showMessageBox('loginMessageBox', data.message, 'success');
+                } else {
+                    showMessageBox('loginMessageBox', data.message || 'Logout failed.', 'error');
+                }
+            } catch (error) {
+                console.error("Frontend logout fetch error:", error);
+                showMessageBox('loginMessageBox', 'Network error during logout.', 'error');
+            }
+            currentUser = null;
+            localStorage.removeItem(STORAGE_KEY_USER);
+            localStorage.removeItem(STORAGE_KEY_TOKEN);
+            sessionStorage.removeItem(STORAGE_KEY_USER);
+            sessionStorage.removeItem(STORAGE_KEY_TOKEN);
+            showMessageBox('loginMessageBox', 'Logged out successfully.', 'info');
+            showPage('loginPage');
+        }
+
+        async function fetchBudget() {
+            if (!currentUser) {
+                if (availableBudgetSpan) availableBudgetSpan.textContent = 'N/A';
+                if (balanceAfterApprovalSpan) balanceAfterApprovalSpan.textContent = 'N/A';
+                return;
+            }
+            if (availableBudgetSpan) availableBudgetSpan.textContent = 'Loading...';
+            if (balanceAfterApprovalSpan) balanceAfterApprovalSpan.textContent = 'Loading...';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/budget`, {
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`
+                    }
+                });
+                const data = await response.json();
+                if (response.ok && data.current_budget !== undefined) {
+                    currentBudget = parseFloat(data.current_budget);
+                    if (availableBudgetSpan) availableBudgetSpan.textContent = currentBudget.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    if (balanceAfterApprovalSpan) balanceAfterApprovalSpan.textContent = currentBudget.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                } else {
+                    console.error("Failed to fetch budget:", data.message || "Unknown error or unexpected data format");
+                    currentBudget = 0;
+                    if (availableBudgetSpan) availableBudgetSpan.textContent = 'Error';
+                    if (balanceAfterApprovalSpan) balanceAfterApprovalSpan.textContent = 'Error';
+                }
+            } catch (error) {
+                console.error("Network error fetching budget:", error);
+                currentBudget = 0;
+                if (availableBudgetSpan) availableBudgetSpan.textContent = 'Error';
+                if (balanceAfterApprovalSpan) balanceAfterApprovalSpan.textContent = 'Error';
+            }
+        }
+
+        async function fetchRequests() {
+            if (!currentUser) {
+                if (requestsListDiv) requestsListDiv.innerHTML = '<p style="text-align: center;">Please log in to view requests.</p>';
+                return;
+            }
+            if (requestsListDiv) requestsListDiv.innerHTML = '<p style="text-align: center;">Loading requests...</p>';
+            console.log('Attempting to fetch requests...'); // Log start of fetch
+            try {
+                const response = await fetch(`${API_BASE_URL}/requests`, {
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`
+                    }
+                });
+                console.log('Response status for /requests:', response.status); // Log response status
+
+                if (!response.ok) {
+                    const errorData = await response.json(); // Try to parse error message
+                    if (requestsListDiv) requestsListDiv.innerHTML = '<p style="text-align: center; color: red;">Failed to load requests.</p>';
+                    console.error("Failed to fetch requests (HTTP error):", errorData.message || "Unknown error from backend");
+                    showMessageBox('requestsMessageBox', errorData.message || 'Failed to load requests.', 'error');
+                    return;
+                }
+
+                const requests = await response.json();
+                console.log('Parsed data from /requests:', requests); // Log parsed data
+
+                if (requestsListDiv) requestsListDiv.innerHTML = ''; // Clear "Loading requests..."
+
+                if (!Array.isArray(requests) || requests.length === 0) {
+                    if (requestsListDiv) requestsListDiv.innerHTML = '<p style="text-align: center;">No requests submitted yet.</p>';
+                    showMessageBox('requestsMessageBox', 'No requests found.', 'info');
+                    return;
+                }
+
+                requests.forEach(request => {
+                    const requestDiv = document.createElement('div');
+                    requestDiv.classList.add('request-item');
+
+                    let statusColor = '#6c757d';
+                    if (request.status === 'approved') {
+                        statusColor = '#28a745';
+                    } else if (request.status === 'rejected') {
+                        statusColor = '#dc3545';
+                    } else if (request.status === 'completed') {
+                        statusColor = '#007bff';
+                    }
+
+                    let employerActionsHtml = '';
+                    if (currentUser.role === 'employer' || currentUser.role === 'admin') {
+                        const isDecisionMade = ['approved', 'rejected', 'completed'].includes(request.status);
+                        const isApproved = request.status === 'approved';
+                        const isRejected = request.status === 'rejected';
+                        const isCompleted = request.status === 'completed';
+
+                        employerActionsHtml = `
+                            <div class="employer-actions" style="margin-top: 20px;">
+                                <h4 style="margin-top: 0; color: #555;">Your Decision:</h4>
+                                <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px;">
+                                    <input type="radio" id="approve-${request.id}" name="action-${request.id}" value="approved" ${isApproved ? 'checked' : ''} ${isDecisionMade && !isApproved ? 'disabled' : ''}>
+                                    <label for="approve-${request.id}">Approve</label>
+
+                                    <input type="radio" id="reject-${request.id}" name="action-${request.id}" value="rejected" ${isRejected ? 'checked' : ''} ${isDecisionMade && !isRejected ? 'disabled' : ''}>
+                                    <label for="reject-${request.id}">Reject</label>
+
+                                    <input type="radio" id="complete-${request.id}" name="action-${request.id}" value="completed" ${isCompleted ? 'checked' : ''} ${isDecisionMade && !isCompleted ? 'disabled' : ''}>
+                                    <label for="complete-${request.id}">Complete</label>
+                                </div>
+                                <button class="update-status-btn action-btn" data-id="${request.id}" ${isDecisionMade ? 'disabled' : ''} style="padding: 10px; font-size: 0.9em; width: auto; background-color: ${isDecisionMade ? '#cccccc' : '#007bff'}; cursor: ${isDecisionMade ? 'not-allowed' : 'pointer'};">Update Status</button>
+                            </div>
+                        `;
+                    }
+
+                    const canDeleteRequest = (currentUser && (currentUser.id === request.user_id || currentUser.role === 'admin' || currentUser.role === 'employer'));
+
+                    requestDiv.innerHTML = `
+                        <h3 style="margin-top: 0; color: #007bff;">${request.description || request.request_type}</h3>
+                        <p><strong>Requested By:</strong> ${request.username}</p>
+                        <p><strong>Amount:</strong> KES ${parseFloat(request.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                        <p><strong>Date Requested:</strong> ${new Date(request.created_at).toLocaleDateString()}</p>
+                        <p><strong>Status:</strong> <span style="color: ${statusColor}; font-weight: 700;">${request.status.toUpperCase()}</span></p>
+                        ${employerActionsHtml}
+                        <div class="request-actions">
+                            <button class="delete-request-btn" data-id="${request.id}" ${!canDeleteRequest ? 'disabled' : ''}>Delete Request</button>
+                        </div>
+                    `;
+                    if (requestsListDiv) requestsListDiv.appendChild(requestDiv);
+
+                    if (currentUser.role === 'employer' || currentUser.role === 'admin') {
+                        const updateStatusBtn = requestDiv.querySelector(`.update-status-btn[data-id="${request.id}"]`);
+                        if (updateStatusBtn) {
+                            updateStatusBtn.addEventListener('click', (e) => {
+                                const requestId = parseInt(e.target.dataset.id);
+                                const approvedRadio = document.getElementById(`approve-${requestId}`);
+                                const rejectedRadio = document.getElementById(`reject-${requestId}`);
+                                const completedRadio = document.getElementById(`complete-${requestId}`);
+                                let newStatus = '';
+                                if (approvedRadio && approvedRadio.checked) {
+                                    newStatus = 'approved';
+                                } else if (rejectedRadio && rejectedRadio.checked) {
+                                    newStatus = 'rejected';
+                                } else if (completedRadio && completedRadio.checked) {
+                                    newStatus = 'completed';
+                                }
+
+                                if (newStatus) {
+                                    handleUpdateRequestStatus(requestId, newStatus);
+                                } else {
+                                    showMessageBox('requestsMessageBox', 'Please select an approval status.', 'error');
+                                }
+                            });
+                        }
+                    }
+
+                    if (canDeleteRequest) {
+                        const deleteRequestBtn = requestDiv.querySelector(`.delete-request-btn[data-id="${request.id}"]`);
+                        if (deleteRequestBtn) {
+                            deleteRequestBtn.addEventListener('click', () => handleDeleteRequest(request.id));
+                        }
+                    }
+                });
+                showMessageBox('requestsMessageBox', 'Requests loaded successfully.', 'success');
+            } catch (error) {
+                console.error("Error fetching requests (Network/Parse error):", error);
+                if (requestsListDiv) requestsListDiv.innerHTML = '<p style="text-align: center; color: red;">Error loading requests. Please try again.</p>';
+                showMessageBox('requestsMessageBox', `Error loading requests: ${error.message || 'Unknown error'}`, 'error');
+            }
+        }
+
+        async function handleUpdateRequestStatus(requestId, newStatus) {
+            if (!confirm(`Are you sure you want to change request ${requestId} status to ${newStatus}?`)) {
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/requests/${requestId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentUser.token}`
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    showMessageBox('requestsMessageBox', data.message, 'success');
+                    await fetchRequests();
+                    await fetchBudget();
+                } else {
+                    showMessageBox('requestsMessageBox', data.message || 'Failed to update request status.', 'error');
+                }
+            } catch (error) {
+                console.error("Error updating request status:", error);
+                showMessageBox('requestsMessageBox', `Network error or server unreachable.`, 'error');
+            }
+        }
+
+        async function handleDeleteRequest(requestId) {
+            if (!confirm(`Are you sure you want to delete request ${requestId}? This action cannot be undone.`)) {
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/requests/${requestId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`
+                    }
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    showMessageBox('requestsMessageBox', data.message, 'success');
+                    await fetchRequests();
+                    await fetchBudget();
+                } else {
+                    showMessageBox('requestsMessageBox', data.message || 'Failed to delete request.', 'error');
+                }
+            } catch (error) {
+                console.error("Error deleting request:", error);
+                showMessageBox('requestsMessageBox', `Network error or server unreachable.`, 'error');
+            }
+        }
+
+        async function fetchUsers() {
+            if (!currentUser || currentUser.role !== 'admin') {
+                if (userListDiv) userListDiv.innerHTML = '<p style="text-align: center;">Only Admins can view users.</p>';
+                return;
+            }
+            if (userListDiv) userListDiv.innerHTML = '<p style="text-align: center;">Loading users...</p>';
+            try {
+                const response = await fetch(`${API_BASE_URL}/users`, {
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`
+                    }
+                });
+                const usersList = await response.json();
+
+                if (userListDiv) userListDiv.innerHTML = '';
+                if (!response.ok) {
+                     if (userListDiv) userListDiv.innerHTML = '<p style="text-align: center; color: red;">Failed to load users.</p>';
+                     console.error("Failed to fetch users:", usersList.message || "Unknown error from backend");
+                     showMessageBox('userMessageBox', usersList.message || 'Failed to load users.', 'error');
+                     return;
+                }
+                if (!Array.isArray(usersList) || usersList.length === 0) {
+                    if (userListDiv) userListDiv.innerHTML = '<p style="text-align: center;">No users registered yet.</p>';
+                    showMessageBox('userMessageBox', 'No users found.', 'info');
+                    return;
+                }
+
+                usersList.forEach(user => {
+                    const userItemDiv = document.createElement('div');
+                    userItemDiv.classList.add('user-item');
+
+                    const isCurrentUser = user.id === currentUser.id;
+                    const isTargetAdmin = user.role === 'admin';
+                    const promoteDisabled = isCurrentUser || isTargetAdmin || user.role === 'employer';
+                    const deleteDisabled = isCurrentUser || isTargetAdmin;
+
+                    userItemDiv.innerHTML = `
+                        <div class="user-info">
+                            <p class="username">${user.username}</p>
+                            <p class="role">Role: ${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</p>
+                            <p class="email">Email: ${user.email}</p>
+                        </div>
+                        <div class="user-actions">
+                            <button class="promote-btn" data-uid="${user.id}"
+                                ${promoteDisabled ? 'disabled' : ''}>
+                                Promote to Employer
+                            </button>
+                            <button class="delete-btn" data-uid="${user.id}"
+                                ${deleteDisabled ? 'disabled' : ''}>
+                                Delete User
+                            </button>
+                        </div>
+                    `;
+                    if (userListDiv) userListDiv.appendChild(userItemDiv);
+
+                    if (currentUser && currentUser.role === 'admin') {
+                        const promoteBtn = userItemDiv.querySelector(`.promote-btn[data-uid="${user.id}"]`);
+                        if (promoteBtn) {
+                            promoteBtn.addEventListener('click', () => promoteUser(user.id));
+                        }
+                        const deleteBtn = userItemDiv.querySelector(`.delete-btn[data-uid="${user.id}"]`);
+                        if (deleteBtn) {
+                            deleteBtn.addEventListener('click', () => deleteUser(user.id));
+                        }
+                    }
+                });
+                showMessageBox('userMessageBox', 'Users loaded successfully.', 'success');
+            } catch (error) {
+                console.error("Error fetching users:", error);
+                if (userListDiv) userListDiv.innerHTML = '<p style="text-align: center; color: red;">Error loading users. Please try again.</p>';
+                showMessageBox('userMessageBox', `Error loading users: ${error.message || 'Unknown error'}`, 'error');
+            }
+        }
+
+        // Function to verify token with backend and update UI - needs to be globally accessible
+        async function verifyTokenAndRender() {
+            const storedToken = localStorage.getItem(STORAGE_KEY_TOKEN) || sessionStorage.getItem(STORAGE_KEY_TOKEN);
+            const storedUser = JSON.parse(localStorage.getItem(STORAGE_KEY_USER) || sessionStorage.getItem(STORAGE_KEY_USER));
+
+            if (!storedUser || !storedToken) {
+                console.log('No stored user or token found. Redirecting to login.');
+                showPage('loginPage');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/verify-token`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${storedToken}`
+                    }
+                });
+                const data = await response.json();
+                if (response.ok && data.user) {
+                    currentUser = {
+                        id: data.user.id,
+                        username: data.user.username,
+                        email: data.user.email,
+                        role: data.user.role,
+                        token: storedToken
+                    };
+                    if (localStorage.getItem(STORAGE_KEY_USER)) {
+                        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
+                    } else {
+                        sessionStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
+                    }
+
+                    const currentPageId = document.querySelector('.page.active')?.id;
+                    if (currentPageId === 'loginPage' || currentPageId === 'registerPage' || !currentPageId) {
+                        showPage('dashboardPage');
+                    } else {
+                        showPage(currentPageId);
+                    }
+                } else {
+                    showMessageBox('loginMessageBox', data.message || 'Session expired or invalid. Please log in again.', 'error');
+                    logoutUser();
+                }
+            } catch (error) {
+                console.error('Session verification failed:', error);
+                showMessageBox('loginMessageBox', 'Network error during session verification. Please log in again.', 'error');
+                logoutUser();
+            }
+        }
+
+        // --- Event Listeners (Assigned inside DOMContentLoaded to ensure elements exist) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Frontend JavaScript loaded and DOM is ready.');
+
+            // Re-assign local DOM element variables to ensure they are available after DOMContentLoaded
+            // (These are the ones specifically used in event listeners attached here)
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const resourceRequestForm = document.getElementById('resourceRequestForm');
+            // Assign global variables here
+            requestsListDiv = document.getElementById('requestsList');
+            userListDiv = document.getElementById('userList');
+            addNewUserForm = document.getElementById('addNewUserForm');
+
+            const loginMessageBox = document.getElementById('loginMessageBox');
+            const registerMessageBox = document.getElementById('registerMessageBox');
+            const dashboardMessageBox = document.getElementById('dashboardMessageBox');
+            const requestsMessageBox = document.getElementById('requestsMessageBox');
+            const userMessageBox = document.getElementById('userMessageBox');
+            const addNewUserMessageBox = document.getElementById('addNewUserMessageBox');
+            const budgetMessageBox = document.getElementById('budgetMessageBox');
+
+            const priceInput = document.getElementById('price');
+            const priceError = document.getElementById('priceError');
+            const requestDateInput = document.getElementById('requestDate');
+
+            const budgetAdminControls = document.getElementById('budgetAdminControls');
+            const updateBudgetForm = document.getElementById('updateBudgetForm');
+            const newBudgetAmountInput = document.getElementById('newBudgetAmount');
+
+
+            // --- Navigation Event Listeners ---
+            document.getElementById('navLoginBtn').addEventListener('click', () => {
+                if (currentUser) {
+                    logoutUser();
+                } else {
+                    showPage('loginPage');
+                }
+            });
+
+            document.getElementById('navDashboardBtn').addEventListener('click', () => {
+                if (currentUser) {
+                    showPage('dashboardPage');
+                } else {
+                    showMessageBox('loginMessageBox', 'Please log in to access the dashboard.', 'info');
+                    showPage('loginPage');
+                }
+            });
+            document.getElementById('navRequestsBtn').addEventListener('click', () => {
+                if (currentUser) {
+                    showPage('requestsPage');
+                } else {
+                    showMessageBox('loginMessageBox', 'Please log in to view requests.', 'info');
+                    showPage('loginPage');
+                }
+            });
+            document.getElementById('navUsersBtn').addEventListener('click', () => {
+                if (currentUser && currentUser.role === 'admin') {
+                    showPage('userManagementPage');
+                } else {
+                    showMessageBox('loginMessageBox', 'Only Admins can access User Management.', 'error');
+                    showPage('loginPage');
+                }
+            });
+
+            // Toggle between login and register forms
+            document.getElementById('showRegister').addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage('registerPage');
+            });
+            document.getElementById('showLogin').addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage('loginPage');
+            });
+
+
+            // --- Form Event Listeners (now that DOM elements are initialized) ---
+
+            // Registration Form
+            if (registerForm) {
+                registerForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const username = document.getElementById('registerUsername').value.trim();
+                    const email = document.getElementById('registerEmail').value.trim();
+                    const password = document.getElementById('registerPassword').value;
+                    const role = document.getElementById('registerRole').value;
+
+                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!username || !email || !password) {
+                        showMessageBox('registerMessageBox', 'All fields are required.', 'error');
+                        return;
+                    }
+                    if (username.length < 3) {
+                        showMessageBox('registerMessageBox', 'Username must be at least 3 characters.', 'error');
+                        return;
+                    }
+                    if (!emailPattern.test(email)) {
+                        showMessageBox('registerMessageBox', 'Please enter a valid email address.', 'error');
+                        return;
+                    }
+                    if (password.length < 6) {
+                        showMessageBox('registerMessageBox', 'Password must be at least 6 characters.', 'error');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/register`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username, email, password, role })
+                        });
+                        const data = await response.json();
+                        if (response.ok) {
+                            showMessageBox('registerMessageBox', data.message, 'success');
+                            registerForm.reset();
+                            showPage('loginPage');
+                        } else {
+                            showMessageBox('registerMessageBox', data.message || 'Registration failed.', 'error');
+                        }
+                    } catch (error) {
+                        console.error("Frontend registration fetch error:", error);
+                        showMessageBox('registerMessageBox', 'Network error or server unreachable. Please try again later.', 'error');
+                    }
+                });
+            }
+
+            // Login Form
+            if (loginForm) {
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const loginIdentifier = document.getElementById('loginUsername').value.trim();
+                    const password = document.getElementById('loginPassword').value;
+                    const rememberMe = document.getElementById('rememberMeLogin').checked;
+
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/login`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username: loginIdentifier, password })
+                        });
+                        const data = await response.json();
+                        if (response.ok) {
+                            currentUser = {
+                                id: data.user.id,
+                                username: data.user.username,
+                                email: data.user.email,
+                                role: data.user.role,
+                                token: data.token
+                            };
+                            if (rememberMe) {
+                                localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
+                                localStorage.setItem(STORAGE_KEY_TOKEN, currentUser.token);
+                            } else {
+                                sessionStorage.setItem(STORAGE_KEY_USER, JSON.stringify(currentUser));
+                                sessionStorage.setItem(STORAGE_KEY_TOKEN, currentUser.token);
+                            }
+                            showMessageBox('loginMessageBox', `Welcome, ${currentUser.username}! Logged in as ${currentUser.role}.`, 'success');
+                            loginForm.reset();
+                            showPage('dashboardPage');
+                        } else {
+                            showMessageBox('loginMessageBox', data.message || 'Login failed.', 'error');
+                        }
+                    } catch (error) {
+                        console.error("Frontend login fetch error:", error);
+                        showMessageBox('loginMessageBox', 'Network error or server unreachable. Please try again later.', 'error');
+                    }
+                });
+            }
+
+            // Resource Request Form
+            if (priceInput) {
+                priceInput.addEventListener('input', () => {
+                    const requestedPrice = parseFloat(priceInput.value);
+                    if (isNaN(requestedPrice) || requestedPrice <= 0) {
+                        if (priceError) priceError.style.display = 'none';
+                        return;
+                    }
+                    if (requestedPrice > currentBudget) {
+                        if (priceError) {
+                            priceError.textContent = 'Price exceeds available budget!';
+                            priceError.style.display = 'block';
+                        }
+                    } else {
+                        if (priceError) priceError.style.display = 'none';
+                    }
+                });
+            }
+
+            if (resourceRequestForm) {
+                resourceRequestForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    if (!currentUser) {
+                        showMessageBox('dashboardMessageBox', 'Please log in to submit requests.', 'error');
+                        return;
+                    }
+                    if (!['employee', 'employer', 'admin'].includes(currentUser.role)) {
+                        showMessageBox('dashboardMessageBox', 'You do not have permission to submit requests.', 'error');
+                        return;
+                    }
+
+                    const itemDescription = document.getElementById('itemDescription').value.trim();
+                    const price = parseFloat(priceInput.value);
+                    const requestDate = requestDateInput.value;
+
+                    if (!itemDescription || isNaN(price) || price <= 0 || !requestDate) {
+                        showMessageBox('dashboardMessageBox', 'Please fill all request fields correctly with a positive amount and a date.', 'error');
+                        return;
+                    }
+
+                    if (price > currentBudget) {
+                        showMessageBox('dashboardMessageBox', 'Cannot submit: Price exceeds available budget. Please reduce the amount.', 'error');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/requests`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${currentUser.token}`
+                            },
+                            body: JSON.stringify({
+                                request_type: 'Resource Request',
+                                description: itemDescription,
+                                amount: price,
+                                request_date: requestDate
+                            })
+                        });
+                        const data = await response.json();
+                        if (response.ok) {
+                            showMessageBox('dashboardMessageBox', data.message, 'success');
+                            resourceRequestForm.reset();
+                            if (priceError) priceError.style.display = 'none';
+                            if (requestDateInput) requestDateInput.value = '';
+                            fetchBudget();
+                        } else {
+                            showMessageBox('dashboardMessageBox', data.message || 'Failed to submit request.', 'error');
+                        }
+                    } catch (error) {
+                        console.error("Frontend request submission error:", error);
+                        showMessageBox('dashboardMessageBox', 'Network error or server unreachable. Please try again later.', 'error');
+                    }
+                });
+            }
+
+            // Update Budget Form
+            if (updateBudgetForm) {
+                updateBudgetForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    if (!currentUser || currentUser.role !== 'admin') {
+                        showMessageBox('budgetMessageBox', 'Only Admins can update the budget.', 'error');
+                        return;
+                    }
+
+                    const newAmount = parseFloat(newBudgetAmountInput.value);
+                    if (isNaN(newAmount) || newAmount < 0) {
+                        showMessageBox('budgetMessageBox', 'Please enter a valid non-negative amount.', 'error');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/budget`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${currentUser.token}`
+                            },
+                            body: JSON.stringify({ amount: newAmount })
+                        });
+                        const data = await response.json();
+                        if (response.ok) {
+                            showMessageBox('budgetMessageBox', data.message, 'success');
+                            if (newBudgetAmountInput) newBudgetAmountInput.value = '';
+                            await fetchBudget();
+                        } else {
+                            showMessageBox('budgetMessageBox', data.message || 'Failed to update budget.', 'error');
+                        }
+                    } catch (error) {
+                        console.error("Error updating budget:", error);
+                        showMessageBox('budgetMessageBox', 'Network error or server unreachable.', 'error');
+                    }
+                });
+            }
+
+            // Add New User Form
+            if (addNewUserForm) {
+                addNewUserForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    if (!currentUser || currentUser.role !== 'admin') {
+                        showMessageBox('addNewUserMessageBox', 'Only Admins can add new users.', 'error');
+                        return;
+                    }
+
+                    const username = document.getElementById('newUserUsername').value.trim();
+                    const email = document.getElementById('newUserEmail').value.trim();
+                    const password = document.getElementById('newUserPassword').value;
+                    const role = document.getElementById('newUserRole').value;
+
+                    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!username || !email || !password || !role) {
+                        showMessageBox('addNewUserMessageBox', 'All fields are required.', 'error');
+                        return;
+                    }
+                    if (username.length < 3) {
+                        showMessageBox('addNewUserMessageBox', 'Username must be at least 3 characters.', 'error');
+                        return;
+                    }
+                    if (!emailPattern.test(email)) {
+                        showMessageBox('addNewUserMessageBox', 'Please enter a valid email address.', 'error');
+                        return;
+                    }
+                    if (password.length < 6) {
+                        showMessageBox('addNewUserMessageBox', 'Password must be at least 6 characters.', 'error');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/register`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${currentUser.token}`
+                            },
+                            body: JSON.stringify({ username, email, password, role })
+                        });
+
+                        const data = await response.json();
+                        if (response.ok) {
+                            showMessageBox('addNewUserMessageBox', data.message, 'success');
+                            addNewUserForm.reset();
+                            fetchUsers();
+                        } else {
+                            showMessageBox('addNewUserMessageBox', data.message || 'Failed to add new user.', 'error');
+                        }
+                    } catch (error) {
+                        console.error("Frontend add new user fetch error:", error);
+                        showMessageBox('addNewUserMessageBox', 'Network error or server unreachable. Please try again later.', 'error');
+                    }
+                });
+            }
+        });
+
+        // This block runs immediately when the script is parsed, for initial session check
+        const storedUserOnInit = JSON.parse(localStorage.getItem(STORAGE_KEY_USER) || sessionStorage.getItem(STORAGE_KEY_USER));
+        const storedTokenOnInit = localStorage.getItem(STORAGE_KEY_TOKEN) || sessionStorage.getItem(STORAGE_KEY_TOKEN);
+
+        if (storedUserOnInit && storedTokenOnInit) {
+            currentUser = storedUserOnInit;
+            verifyTokenAndRender();
+        } else {
+            showPage('loginPage');
+        }
+        updateNavigationVisibility();
+
+    </script>
+</body>
+</html>
